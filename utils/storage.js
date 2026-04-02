@@ -25,8 +25,8 @@ function toggleFavorite(id) {
     return false;
   } else {
     // 添加收藏
-    collected.push(id);
-    wx.setStorageSync(COLLECTION_KEY, collected);
+    const newCollected = [...collected, id];
+    wx.setStorageSync(COLLECTION_KEY, newCollected);
     return true;
   }
 }
@@ -50,9 +50,11 @@ function injectCollectionStatus(soundsList) {
 function addCollected(id) {
   const collected = getFavorites();
   if (!collected.includes(id)) {
-    collected.push(id);
-    wx.setStorageSync(COLLECTION_KEY, collected);
+    const newCollected = [...collected, id];
+    wx.setStorageSync(COLLECTION_KEY, newCollected);
+    return newCollected;
   }
+  return collected;
 }
 
 // 移除收藏
@@ -60,6 +62,7 @@ function removeCollected(id) {
   const collected = getFavorites();
   const newCollected = collected.filter(colId => colId !== id);
   wx.setStorageSync(COLLECTION_KEY, newCollected);
+  return newCollected;
 }
 
 module.exports = {
