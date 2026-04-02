@@ -36,14 +36,16 @@ Component({
 
   attached() {
     this.setData({
-      hasTimer: this.data.remainingSeconds > 0
+      hasTimer: this.data.remainingSeconds > 0,
+      formattedTime: this.formatTime(this.data.remainingSeconds)
     });
   },
 
   observers: {
     remainingSeconds(val) {
       this.setData({
-        hasTimer: val > 0
+        hasTimer: val > 0,
+        formattedTime: this.formatTime(val)
       });
     }
   }

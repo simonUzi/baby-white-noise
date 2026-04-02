@@ -7,7 +7,7 @@
       未播放
     </view>
     <view wx:if="{{hasTimer}}" class="timer">
-      剩余 {{formatTime(remainingSeconds)}}
+      剩余 {{formattedTime}}
     </view>
   </view>
 
