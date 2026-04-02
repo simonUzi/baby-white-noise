@@ -28,7 +28,7 @@
     <view class="modal-content" catchtap>
       <view class="modal-title">选择播放时长</view>
       <view class="timer-picker">
-        <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{index}}" bindchange="onTimerChange">
+        <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{timerPickerIndex}}" bindchange="onTimerChange">
           <view class="picker-display">
             当前选择: {{timerMinutes}} 分钟
           </view>

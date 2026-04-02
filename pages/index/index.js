@@ -9,8 +9,8 @@ Page({
     isPlaying: false,
     showTimerPicker: false,
     timerMinutes: 30,
-    remainingSeconds: 0,
-    timerInterval: null
+    timerPickerIndex: 5,
+    remainingSeconds: 0
   },
 
   onLoad() {
@@ -108,8 +108,11 @@ Page({
   },
 
   onTimerChange(e) {
+    const values = [5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
+    const selectedIndex = e.detail.value;
     this.setData({
-      timerMinutes: e.detail.value
+      timerMinutes: values[selectedIndex],
+      timerPickerIndex: selectedIndex
     });
   },
 
@@ -125,7 +128,7 @@ Page({
     this.clearTimer();
 
     // 启动倒计时
-    this.data.timerInterval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       let remaining = this.data.remainingSeconds - 1;
       if (remaining <= 0) {
         // 时间到，停止播放
@@ -149,9 +152,9 @@ Page({
   },
 
   clearTimer() {
-    if (this.data.timerInterval) {
-      clearInterval(this.data.timerInterval);
-      this.data.timerInterval = null;
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
     }
     this.setData({
       remainingSeconds: 0
