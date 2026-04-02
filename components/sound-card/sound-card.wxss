@@ -1,0 +1,49 @@
+.sound-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx 24rpx;
+  margin-bottom: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  min-height: 180rpx;
+  box-sizing: border-box;
+}
+
+.sound-card.playing {
+  background: #e8f0fd;
+  border: 2rpx solid #4A6FA5;
+  transform: scale(1.02);
+}
+
+.sound-card:active {
+  transform: scale(0.98);
+}
+
+.sound-icon {
+  font-size: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.sound-name {
+  font-size: 28rpx;
+  color: #333333;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  font-size: 32rpx;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.favorite-btn.collected {
+  opacity: 1;
+}

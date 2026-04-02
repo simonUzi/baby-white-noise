@@ -1,0 +1,7 @@
+<view class="sound-card {{isPlaying && sound.id === currentId ? 'playing' : ''}}" bindtap="onCardTap">
+  <view class="sound-icon">{{sound.icon}}</view>
+  <view class="sound-name">{{sound.name}}</view>
+  <view class="favorite-btn {{sound.isCollected ? 'collected' : ''}}" catchtap="onFavoriteTap">
+    {{sound.isCollected ? '⭐' : '☆'}}
+  </view>
+</view>
