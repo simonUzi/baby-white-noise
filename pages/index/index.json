@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "sound-card": "/components/sound-card/sound-card",
+    "player-bar": "/components/player-bar/player-bar"
+  },
+  "enablePullDownRefresh": false
+}

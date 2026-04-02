@@ -2,55 +2,72 @@ const COLLECTION_KEY = 'baby-whitenoise-collected';
 
 // 初始化存储（如果没有则创建空数组）
 function initStorage() {
-  const collected = getCollectedIds();
+  const collected = getFavorites();
   if (collected === null) {
     wx.setStorageSync(COLLECTION_KEY, []);
   }
 }
 
 // 获取已收藏的声音ID列表
-function getCollectedIds() {
-  return wx.getStorageSync(COLLECTION_KEY);
+function getFavorites() {
+  return wx.getStorageSync(COLLECTION_KEY) || [];
 }
 
-// 添加收藏
-function addCollected(id) {
-  const collected = getCollectedIds() || [];
-  if (!collected.includes(id)) {
+// 切换收藏状态，返回是否已收藏
+function toggleFavorite(id) {
+  const collected = getFavorites();
+  const isCollected = collected.includes(id);
+
+  if (isCollected) {
+    // 取消收藏
+    const newCollected = collected.filter(colId => colId !== id);
+    wx.setStorageSync(COLLECTION_KEY, newCollected);
+    return false;
+  } else {
+    // 添加收藏
     collected.push(id);
     wx.setStorageSync(COLLECTION_KEY, collected);
+    return true;
   }
-  return collected;
-}
-
-// 取消收藏
-function removeCollected(id) {
-  let collected = getCollectedIds() || [];
-  collected = collected.filter(colId => colId !== id);
-  wx.setStorageSync(COLLECTION_KEY, collected);
-  return collected;
 }
 
 // 检查是否已收藏
 function isCollected(id) {
-  const collected = getCollectedIds() || [];
+  const collected = getFavorites();
   return collected.includes(id);
 }
 
 // 给声音列表添加收藏状态
 function injectCollectionStatus(soundsList) {
-  const collectedIds = getCollectedIds() || [];
+  const collectedIds = getFavorites();
   return soundsList.map(sound => ({
     ...sound,
     isCollected: collectedIds.includes(sound.id)
   }));
 }
 
+// 添加收藏
+function addCollected(id) {
+  const collected = getFavorites();
+  if (!collected.includes(id)) {
+    collected.push(id);
+    wx.setStorageSync(COLLECTION_KEY, collected);
+  }
+}
+
+// 移除收藏
+function removeCollected(id) {
+  const collected = getFavorites();
+  const newCollected = collected.filter(colId => colId !== id);
+  wx.setStorageSync(COLLECTION_KEY, newCollected);
+}
+
 module.exports = {
   initStorage,
-  getCollectedIds,
-  addCollected,
-  removeCollected,
+  getFavorites,
+  toggleFavorite,
   isCollected,
-  injectCollectionStatus
+  injectCollectionStatus,
+  addCollected,
+  removeCollected
 };

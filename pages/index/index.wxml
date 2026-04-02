@@ -1,0 +1,43 @@
+<view class="container">
+  <!-- 分类展示声音列表 -->
+  <block wx:for="{{categories}}" wx:key="name">
+    <view class="category-title">{{item.name}}</view>
+    <view class="sound-grid">
+      <sound-card
+        wx:for="{{item.sounds}}" wx:for-item="sound" wx:key="id"
+        sound="{{sound}}"
+        isPlaying="{{isPlaying && currentSound && currentSound.id === sound.id}}"
+        bindplay="onPlaySound"
+        bindtogglefavorite="onToggleFavorite"
+      />
+    </view>
+  </block>
+
+  <!-- 底部播放控制栏 -->
+  <player-bar
+    currentSound="{{currentSound}}"
+    isPlaying="{{isPlaying}}"
+    remainingSeconds="{{remainingSeconds}}"
+    bindplaytoggle="onPlayToggle"
+    bindsettimer="openTimerPicker"
+    bindstop="onStop"
+  />
+
+  <!-- 定时选择弹窗 -->
+  <view wx:if="{{showTimerPicker}}" class="modal-overlay" bindtap="closeTimerPicker">
+    <view class="modal-content" catchtap>
+      <view class="modal-title">选择播放时长</view>
+      <view class="timer-picker">
+        <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{index}}" bindchange="onTimerChange">
+          <view class="picker-display">
+            当前选择: {{timerMinutes}} 分钟
+          </view>
+        </picker>
+      </view>
+      <view class="modal-buttons">
+        <button class="btn cancel" bindtap="closeTimerPicker">取消</button>
+        <button class="btn confirm" bindtap="startTimer">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
