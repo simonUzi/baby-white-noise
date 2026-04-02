@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/collection/collection"
+  ],
+  "subpackages": [
+    {
+      "root": "assets",
+      "name": "assets",
+      "pages": [
+        "audio/audio"
+      ]
+    }
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#4A6FA5",
+    "navigationBarTitleText": "宝宝安睡",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f7fa"
+  },
+  "tabBar": {
+    "color": "#777777",
+    "selectedColor": "#4A6FA5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "声音列表",
+        "iconPath": "",
+        "selectedIconPath": ""
+      },
+      {
+        "pagePath": "pages/collection/collection",
+        "text": "我的收藏",
+        "iconPath": "",
+        "selectedIconPath": ""
+      }
+    ]
+  }
+}
