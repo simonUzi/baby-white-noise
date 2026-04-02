@@ -45,7 +45,11 @@ Page({
   },
 
   onToggleFavorite(e) {
+    console.log('=== index.js onToggleFavorite ===');
+    console.log('  e:', e);
+    console.log('  e.detail:', e.detail);
     const soundId = e.detail.soundId;
+    console.log('  soundId:', soundId);
 
     // 更新数据中的收藏状态
     const categories = this.data.categories.map(category => ({
@@ -53,6 +57,8 @@ Page({
       sounds: category.sounds.map(sound => {
         if (sound.id === soundId) {
           const newIsCollected = !sound.isCollected;
+          console.log('  found sound:', sound);
+          console.log('  newIsCollected:', newIsCollected);
           if (newIsCollected) {
             storage.addCollected(soundId);
           } else {
@@ -67,9 +73,13 @@ Page({
       })
     }));
 
+    console.log('  updated categories:', categories);
+
     this.setData({
       categories
     });
+
+    console.log('  setData complete!');
   },
 
   onPlayToggle() {
@@ -125,7 +135,7 @@ Page({
     });
 
     // 清除之前的定时器
-    this.clearTimer();
+    this.clearTimer(false);
 
     // 启动倒计时
     this.timerInterval = setInterval(() => {
@@ -151,14 +161,16 @@ Page({
     }, 1000);
   },
 
-  clearTimer() {
+  clearTimer(resetRemaining = true) {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
-    this.setData({
-      remainingSeconds: 0
-    });
+    if (resetRemaining) {
+      this.setData({
+        remainingSeconds: 0
+      });
+    }
   },
 
   onUnload() {

@@ -44,7 +44,10 @@ Page({
   },
 
   onToggleFavorite(e) {
+    console.log('=== collection.js onToggleFavorite ===');
+    console.log('  e:', e);
     const soundId = e.detail.soundId;
+    console.log('  soundId:', soundId);
     storage.removeCollected(soundId);
     this.loadCollectedSounds();
 
@@ -111,7 +114,7 @@ Page({
       showTimerPicker: false
     });
 
-    this.clearTimer();
+    this.clearTimer(false);
 
     this.timerInterval = setInterval(() => {
       let remaining = this.data.remainingSeconds - 1;
@@ -135,14 +138,16 @@ Page({
     }, 1000);
   },
 
-  clearTimer() {
+  clearTimer(resetRemaining = true) {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
-    this.setData({
-      remainingSeconds: 0
-    });
+    if (resetRemaining) {
+      this.setData({
+        remainingSeconds: 0
+      });
+    }
   },
 
   onUnload() {

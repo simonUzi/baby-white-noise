@@ -18,10 +18,16 @@ Component({
     },
 
     onFavoriteTap(e) {
+      console.log('=== sound-card onFavoriteTap ===');
+      console.log('  e:', e);
+      console.log('  this.properties.sound.id:', this.properties.sound.id);
+
       e.stopPropagation();
       this.triggerEvent('togglefavorite', {
         soundId: this.properties.sound.id
       });
+
+      console.log('  Event dispatched!');
     }
   }
 });
