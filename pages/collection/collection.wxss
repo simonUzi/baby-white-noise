@@ -1,0 +1,47 @@
+.container {
+  padding: 32rpx;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 48rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666666;
+  display: block;
+}
+
+.sounds-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999999;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 28rpx;
+  color: #cccccc;
+  display: block;
+}

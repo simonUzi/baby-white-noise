@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "sound-card": "/components/sound-card/sound-card"
+  }
+}
