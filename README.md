@@ -23,9 +23,9 @@
 
 ## 目录结构
 
-见 `docs/superpowers/specs/2026-04-02-baby-white-noise-design.md`
+见 `../docs/superpowers/specs/2026-04-02-baby-white-noise-design.md`
 
 ## 设计文档
 
-- 设计文档: `docs/superpowers/specs/2026-04-02-baby-white-noise-design.md`
-- 实现计划: `docs/superpowers/plans/2026-04-02-baby-white-noise-plan.md`
+- 设计文档: `../docs/superpowers/specs/2026-04-02-baby-white-noise-design.md`
+- 实现计划: `../docs/superpowers/plans/2026-04-02-baby-white-noise-plan.md`
