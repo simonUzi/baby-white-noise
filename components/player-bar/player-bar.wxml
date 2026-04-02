@@ -1,0 +1,25 @@
+<view class="player-bar">
+  <view class="player-info">
+    <view wx:if="{{currentSound}}" class="current-name">
+      {{currentSound.name}}
+    </view>
+    <view wx:else class="current-name">
+      未播放
+    </view>
+    <view wx:if="{{hasTimer}}" class="timer">
+      剩余 {{formatTime(remainingSeconds)}}
+    </view>
+  </view>
+
+  <view class="player-controls">
+    <button class="control-btn timer-btn" bindtap="onTimerTap">
+      ⏱️ 定时
+    </button>
+    <button class="control-btn play-btn {{isPlaying ? 'playing' : ''}}" bindtap="onPlayTap">
+      {{isPlaying ? '⏸️' : '▶️'}}
+    </button>
+    <button class="control-btn stop-btn" bindtap="onStopTap">
+      ⏹️ 停止
+    </button>
+  </view>
+</view>
