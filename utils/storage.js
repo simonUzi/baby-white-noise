@@ -13,6 +13,11 @@ function getFavorites() {
   return wx.getStorageSync(COLLECTION_KEY) || [];
 }
 
+// 获取已收藏的声音ID列表 (别名用于兼容)
+function getCollectedIds() {
+  return getFavorites();
+}
+
 // 切换收藏状态，返回是否已收藏
 function toggleFavorite(id) {
   const collected = getFavorites();
@@ -68,6 +73,7 @@ function removeCollected(id) {
 module.exports = {
   initStorage,
   getFavorites,
+  getCollectedIds,
   toggleFavorite,
   isCollected,
   injectCollectionStatus,

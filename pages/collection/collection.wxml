@@ -1,25 +1,47 @@
 <view class="container">
-  <view class="header">
-    <text class="title">我的收藏</text>
-    <text class="subtitle">您收藏的白噪音</text>
+  <!-- 空状态 -->
+  <view wx:if="{{collectedSounds.length === 0}}" class="empty-state">
+    <view class="empty-icon">⭐</view>
+    <view class="empty-text">还没有收藏的声音</view>
+    <view class="empty-hint">去首页点击星星收藏喜欢的声音吧</view>
   </view>
 
-  <view class="favorites-list">
-    <block wx:if="{{favoriteSounds.length > 0}}">
-      <view class="sounds-grid">
-        <block wx:for="{{favoriteSounds}}" wx:key="id">
-          <sound-card
-            sound="{{item}}"
-            isPlaying="{{currentSound && currentSound.id === item.id && isPlaying}}"
-            bind:play="onPlaySound"
-            bind:togglefavorite="onToggleFavorite"
-          />
-        </block>
+  <!-- 收藏列表 -->
+  <view wx:else class="sound-grid">
+    <sound-card
+      wx:for="{{collectedSounds}}" wx:for-item="sound" wx:key="id"
+      sound="{{sound}}"
+      isPlaying="{{isPlaying && currentSound && currentSound.id === sound.id}}"
+      bindplay="onPlaySound"
+      bindtogglefavorite="onToggleFavorite"
+    />
+  </view>
+
+  <!-- 底部播放控制栏 -->
+  <player-bar
+    currentSound="{{currentSound}}"
+    isPlaying="{{isPlaying}}"
+    remainingSeconds="{{remainingSeconds}}"
+    bindplaytoggle="onPlayToggle"
+    bindsettimer="openTimerPicker"
+    bindstop="onStop"
+  />
+
+  <!-- 定时选择弹窗 -->
+  <view wx:if="{{showTimerPicker}}" class="modal-overlay" bindtap="closeTimerPicker">
+    <view class="modal-content" catchtap>
+      <view class="modal-title">选择播放时长</view>
+      <view class="timer-picker">
+        <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{timerPickerIndex}}" bindchange="onTimerChange">
+          <view class="picker-display">
+            当前选择: {{timerMinutes}} 分钟
+          </view>
+        </picker>
       </view>
-    </block>
-    <view wx:else class="empty-state">
-      <text class="empty-text">您还没有收藏任何声音</text>
-      <text class="empty-hint">点击声音卡片上的星星即可收藏</text>
+      <view class="modal-buttons">
+        <button class="btn cancel" bindtap="closeTimerPicker">取消</button>
+        <button class="btn confirm" bindtap="startTimer">确定</button>
+      </view>
     </view>
   </view>
 </view>
