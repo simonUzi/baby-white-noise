@@ -141,14 +141,16 @@ Page({
     this.timerInterval = setInterval(() => {
       let remaining = this.data.remainingSeconds - 1;
       if (remaining <= 0) {
-        // 时间到，停止播放
+        // 时间到，停止播放（如果有声音在播放）
         this.clearTimer();
-        const status = audioManager.stop();
-        this.setData({
-          currentSound: status.currentSound,
-          isPlaying: status.isPlaying,
-          remainingSeconds: 0
-        });
+        if (this.data.currentSound) {
+          const status = audioManager.stop();
+          this.setData({
+            currentSound: status.currentSound,
+            isPlaying: status.isPlaying,
+            remainingSeconds: 0
+          });
+        }
         wx.showToast({
           title: '定时结束，已停止播放',
           icon: 'none'
