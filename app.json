@@ -38,5 +38,11 @@
         "selectedIconPath": "images/icon-star-selected.png"
       }
     ]
+  },
+  "preloadRule": {
+    "pages/index/index": {
+      "packages": ["assets"],
+      "network": "all"
+    }
   }
 }
