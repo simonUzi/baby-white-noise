@@ -28,14 +28,14 @@
       {
         "pagePath": "pages/index/index",
         "text": "声音列表",
-        "iconPath": "",
-        "selectedIconPath": ""
+        "iconPath": "images/icon-list.png",
+        "selectedIconPath": "images/icon-list-selected.png"
       },
       {
         "pagePath": "pages/collection/collection",
         "text": "我的收藏",
-        "iconPath": "",
-        "selectedIconPath": ""
+        "iconPath": "images/icon-star.png",
+        "selectedIconPath": "images/icon-star-selected.png"
       }
     ]
   }
