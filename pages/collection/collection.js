@@ -107,6 +107,13 @@ Page({
   },
 
   startTimer() {
+    if (!this.data.currentSound) {
+      wx.showToast({
+        title: '请先选择声音',
+        icon: 'none'
+      });
+      return;
+    }
     const minutes = this.data.timerMinutes;
     const seconds = minutes * 60;
     this.setData({

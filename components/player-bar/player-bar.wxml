@@ -12,13 +12,13 @@
   </view>
 
   <view class="player-controls">
-    <button class="control-btn timer-btn" bindtap="onTimerTap">
+    <button class="control-btn timer-btn" disabled="{{!currentSound}}" bindtap="onTimerTap">
       ⏱️ 定时
     </button>
     <button class="control-btn play-btn {{isPlaying ? 'playing' : ''}}" bindtap="onPlayTap">
       {{isPlaying ? '⏸️' : '▶️'}}
     </button>
-    <button class="control-btn stop-btn" bindtap="onStopTap">
+    <button class="control-btn stop-btn" disabled="{{!currentSound}}" bindtap="onStopTap">
       ⏹️ 停止
     </button>
   </view>
