@@ -12,6 +12,7 @@ const MAX_RECORDINGS = 10       // 最多保存10条
 let isRecording = false
 let currentResolve = null
 let currentReject = null
+let startTime = 0
 
 // 存储键名
 const STORAGE_KEY = 'userRecordings'
@@ -19,12 +20,12 @@ const STORAGE_KEY = 'userRecordings'
 // 获取所有录音列表
 function getRecordings() {
   try {
-    const recordings = wx.getStorageSync(STORAGE_KEY) || []
-    // 按创建时间倒序排列
-    return recordings.sort((a, b) => b.createTime - a.createTime)
+    const recordings = wx.getStorageSync(STORAGE_KEY) || [];
+    // Create copy before sorting to avoid mutating the original array
+    return [...recordings].sort((a, b) => b.createTime - a.createTime);
   } catch (e) {
-    console.error('读取录音列表失败', e)
-    return []
+    console.error('读取录音列表失败', e);
+    return [];
   }
 }
 
@@ -49,6 +50,7 @@ function startRecording() {
     currentResolve = resolve
     currentReject = reject
     isRecording = true
+    startTime = Date.now();
 
     recorderManager.start({
       duration: MAX_DURATION,
@@ -74,10 +76,8 @@ function getIsRecording() {
 
 // 获取当前录音进度（已录制秒数）
 function getCurrentDuration() {
-  if (!isRecording) return 0
-  // 从 startTime 计算，需要保存 startTime...
-  // 实际在页面中处理计时
-  return 0
+  if (!isRecording) return 0;
+  return Math.floor((Date.now() - startTime) / 1000);
 }
 
 // 保存录音（移动临时文件到持久化位置）
@@ -172,15 +172,20 @@ function renameRecording(id, newName) {
 // 初始化事件监听
 ;(function init() {
   recorderManager.onStop((res) => {
-    isRecording = false
-    console.log('录音完成', `size: ${Math.round(res.tempFilePath.length / 1024)}KB`)
+    isRecording = false;
+    try {
+      const stat = fs.statSync(res.tempFilePath);
+      console.log('录音完成', `size: ${Math.round(stat.size / 1024)}KB`);
+    } catch (e) {
+      console.log('录音完成', '无法获取文件大小');
+    }
     if (currentResolve) {
       currentResolve({
         tempFilePath: res.tempFilePath,
         duration: res.duration
-      })
-      currentResolve = null
-      currentReject = null
+      });
+      currentResolve = null;
+      currentReject = null;
     }
   })
 
@@ -200,6 +205,7 @@ module.exports = {
   stopRecording,
   getRecordings,
   getIsRecording,
+  getCurrentDuration,
   saveRecording,
   deleteRecording,
   renameRecording,
