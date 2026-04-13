@@ -4,7 +4,7 @@
     <view class="recording-item" wx:for="{{recordings}}" wx:key="id" data-id="{{item.id}}">
       <view class="recording-info" bindtap="onPlayRecording" data-id="{{item.id}}">
         <view class="recording-name">{{item.name}}</view>
-        <view class="recording-meta">{{item.duration}}s · {{formatTime(item.createTime)}}</view>
+        <view class="recording-meta">{{item.duration}}s · {{item.formattedCreateTime}}</view>
       </view>
       <view class="recording-actions">
         <button class="action-btn" bindtap="onRename" data-id="{{item.id}}">重命名</button>

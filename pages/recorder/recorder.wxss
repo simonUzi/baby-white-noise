@@ -37,7 +37,6 @@
 
 .recording-actions {
   display: flex;
-  gap: 8rpx;
 }
 
 .action-btn {
@@ -47,6 +46,11 @@
   background: #f0f0f0;
   color: #666;
   line-height: 1.4;
+  margin-left: 8rpx;
+}
+
+.action-btn:first-child {
+  margin-left: 0;
 }
 
 .action-btn.delete {

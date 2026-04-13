@@ -6,6 +6,7 @@ Page({
     recordings: [],
     isRecording: false,
     recordingTime: 0,
+    currentPlayingId: null,
     maxRecordings: recorderManager.MAX_RECORDINGS,
     maxDuration: recorderManager.MAX_DURATION / 1000,
     timerInterval: null
@@ -21,11 +22,14 @@ Page({
 
   loadRecordings() {
     const recordings = recorderManager.getRecordings()
-    this.setData({ recordings })
-  },
-
-  formatTime(timestamp) {
-    return new Date(timestamp).toLocaleDateString()
+    // Format create time for display in template
+    const recordingsWithFormattedTime = recordings.map(recording => ({
+      ...recording,
+      formattedCreateTime: new Date(recording.createTime).toLocaleDateString()
+    }))
+    this.setData({
+      recordings: recordingsWithFormattedTime
+    })
   },
 
   startRecording() {
@@ -57,7 +61,7 @@ Page({
     })
 
     // 启动计时器
-    this.data.timerInterval = setInterval(() => {
+    const timerInterval = setInterval(() => {
       const newTime = this.data.recordingTime + 1
       this.setData({ recordingTime: newTime })
       // 30秒自动停止
@@ -65,6 +69,7 @@ Page({
         this.stopRecording()
       }
     }, 1000)
+    this.setData({ timerInterval })
 
     // 开始录音
     recorderManager.startRecording()
@@ -100,13 +105,6 @@ Page({
 
   finishRecording(result) {
     const { tempFilePath, duration } = result
-
-    // 获取文件大小日志
-    try {
-      const fs = wx.getFileSystemManager()
-      const stat = fs.statSync(tempFilePath)
-      console.log(`临时文件大小: ${Math.round(stat.size / 1024)}KB`)
-    } catch (e) {}
 
     // 弹出输入框命名
     wx.showModal({
