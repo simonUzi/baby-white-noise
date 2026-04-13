@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/recorder/recorder",
     "pages/collection/collection"
   ],
   "subpackages": [
@@ -30,6 +31,12 @@
         "text": "声音列表",
         "iconPath": "images/icon-list.png",
         "selectedIconPath": "images/icon-list-selected.png"
+      },
+      {
+        "pagePath": "pages/recorder/recorder",
+        "text": "我的录音",
+        "iconPath": "images/icon-mic.png",
+        "selectedIconPath": "images/icon-mic-selected.png"
       },
       {
         "pagePath": "pages/collection/collection",
