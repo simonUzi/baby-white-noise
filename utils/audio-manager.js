@@ -90,7 +90,7 @@ function play(sound) {
         .then(() => {
           wx.hideLoading();
           // 分包加载完成后重试播放
-          if (innerAudioContext && currentSound) {
+          if (innerAudioContext && currentSound && currentSound.id === sound.id) {
             innerAudioContext.src = currentSound.path;
             innerAudioContext.play();
             isPlaying = true;
@@ -100,11 +100,15 @@ function play(sound) {
           wx.hideLoading();
           console.error('分包加载失败', loadErr);
           // 调用原错误处理
-          originalOnError.call(innerAudioContext, err);
+          if (originalOnError) {
+            originalOnError.call(innerAudioContext, err);
+          }
         });
     } else {
       // 其他错误或正在加载中，使用原错误处理
-      originalOnError.call(innerAudioContext, err);
+      if (originalOnError) {
+        originalOnError.call(innerAudioContext, err);
+      }
     }
   };
 

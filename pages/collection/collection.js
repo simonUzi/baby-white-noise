@@ -1,4 +1,5 @@
 const { sounds } = require('../../data/sounds');
+const recorderManager = require('../../utils/recorder-manager');
 const audioManager = require('../../utils/audio-manager');
 const storage = require('../../utils/storage');
 
@@ -23,12 +24,30 @@ Page({
 
   loadCollectedSounds() {
     const collectedIds = storage.getCollectedIds() || [];
-    const collectedSounds = sounds
+
+    // 获取内置声音中被收藏的
+    const builtInCollected = sounds
       .filter(sound => collectedIds.includes(sound.id))
       .map(sound => ({
         ...sound,
         isCollected: true
       }));
+
+    // 获取用户录音中被收藏的
+    const userRecordings = recorderManager.getRecordings();
+    const userRecordingCollected = userRecordings
+      .filter(recording => collectedIds.includes(recording.id))
+      .map(recording => ({
+        ...recording,
+        isCollected: true
+      }));
+
+    // 合并两类，按创建时间倒序排列
+    const collectedSounds = [
+      ...userRecordingCollected,
+      ...builtInCollected
+    ];
+
     this.setData({
       collectedSounds
     });
