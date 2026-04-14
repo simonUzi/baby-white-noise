@@ -108,6 +108,8 @@ function play(sound) {
     }
   };
 
+  // 确保停止后重新播放新加载
+  innerAudioContext.stop();
   innerAudioContext.play();
   isPlaying = true;
 
