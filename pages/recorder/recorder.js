@@ -1,15 +1,22 @@
 const recorderManager = require('../../utils/recorder-manager')
 const audioManager = require('../../utils/audio-manager')
+const storage = require('../../utils/storage')
 
 Page({
   data: {
     recordings: [],
     isRecording: false,
     recordingTime: 0,
-    currentPlayingId: null,
+    currentSound: null,
+    isPlaying: false,
     maxRecordings: recorderManager.MAX_RECORDINGS,
     maxDuration: recorderManager.MAX_DURATION / 1000,
-    timerInterval: null
+    timerInterval: null,
+    // 播放控制和定时
+    showTimerPicker: false,
+    timerMinutes: 30,
+    timerPickerIndex: 5,
+    remainingSeconds: 0
   },
 
   onLoad() {
@@ -18,17 +25,20 @@ Page({
 
   onShow() {
     this.loadRecordings()
+    // 更新播放状态
+    const status = audioManager.getStatus()
+    this.setData({
+      isPlaying: status.isPlaying,
+      currentSound: status.currentSound
+    })
   },
 
   loadRecordings() {
-    const recordings = recorderManager.getRecordings()
-    // Format create time for display in template
-    const recordingsWithFormattedTime = recordings.map(recording => ({
-      ...recording,
-      formattedCreateTime: new Date(recording.createTime).toLocaleDateString()
-    }))
+    let recordings = recorderManager.getRecordings()
+    // 注入收藏状态
+    recordings = storage.injectCollectionStatus(recordings)
     this.setData({
-      recordings: recordingsWithFormattedTime
+      recordings: recordings
     })
   },
 
@@ -142,28 +152,144 @@ Page({
     })
   },
 
-  onPlayRecording(e) {
-    const id = e.currentTarget.dataset.id
-    const recording = this.data.recordings.find(r => r.id === id)
-    if (!recording) return
+  onPlaySound(e) {
+    const sound = e.detail.sound
+    const status = audioManager.play(sound)
+    this.setData({
+      currentSound: status.currentSound,
+      isPlaying: status.isPlaying
+    })
+  },
 
-    // 停止当前播放
-    audioManager.stop()
-
-    // 使用 audioManager 播放
-    // 构造一个 sound 对象
-    const sound = {
-      id: recording.id,
-      name: recording.name,
-      path: recording.filePath,
-      category: 'user'
-    }
-
-    audioManager.play(sound)
+  onToggleFavorite(e) {
+    const soundId = e.detail.soundId
+    // 更新数据中的收藏状态
+    const recordings = this.data.recordings.map(recording => {
+      if (recording.id === soundId) {
+        const newIsCollected = !recording.isCollected
+        if (newIsCollected) {
+          storage.addCollected(soundId)
+        } else {
+          storage.removeCollected(soundId)
+        }
+        return {
+          ...recording,
+          isCollected: newIsCollected
+        }
+      }
+      return recording
+    })
 
     this.setData({
-      currentPlayingId: id
+      recordings
     })
+  },
+
+  onPlayToggle() {
+    if (!this.data.currentSound) {
+      wx.showToast({
+        title: '请先选择声音',
+        icon: 'none'
+      })
+      return
+    }
+    const status = this.data.isPlaying ? audioManager.pause() : audioManager.resume()
+    this.setData({
+      isPlaying: status.isPlaying
+    })
+  },
+
+  onStop() {
+    this.clearTimer()
+    const status = audioManager.stop()
+    this.setData({
+      currentSound: status.currentSound,
+      isPlaying: status.isPlaying
+    })
+  },
+
+  openTimerPicker() {
+    if (!this.data.currentSound) {
+      wx.showToast({
+        title: '请先选择声音',
+        icon: 'none'
+      })
+      return
+    }
+    this.setData({
+      showTimerPicker: true
+    })
+  },
+
+  closeTimerPicker() {
+    this.setData({
+      showTimerPicker: false
+    })
+  },
+
+  onTimerChange(e) {
+    const values = [5, 10, 15, 20, 25, 30, 45, 60, 90, 120]
+    const selectedIndex = e.detail.value
+    this.setData({
+      timerMinutes: values[selectedIndex],
+      timerPickerIndex: selectedIndex
+    })
+  },
+
+  startTimer() {
+    if (!this.data.currentSound) {
+      wx.showToast({
+        title: '请先选择声音',
+        icon: 'none'
+      })
+      return
+    }
+    const minutes = this.data.timerMinutes
+    const seconds = minutes * 60
+    this.setData({
+      remainingSeconds: seconds,
+      showTimerPicker: false
+    })
+
+    // 清除之前的定时器
+    this.clearTimer(false)
+
+    // 启动倒计时
+    this.timerInterval = setInterval(() => {
+      let remaining = this.data.remainingSeconds - 1
+      if (remaining <= 0) {
+        // 时间到，停止播放
+        this.clearTimer()
+        if (this.data.currentSound) {
+          const status = audioManager.stop()
+          this.setData({
+            currentSound: status.currentSound,
+            isPlaying: status.isPlaying,
+            remainingSeconds: 0
+          })
+        }
+        wx.showToast({
+          title: '定时结束，已停止播放',
+          icon: 'none'
+        })
+      } else {
+        this.setData({
+          remainingSeconds: remaining
+        })
+      }
+    }, 1000)
+  },
+
+  clearTimer(resetRemaining = true) {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval)
+      this.timerInterval = null
+    }
+    if (resetRemaining) {
+      this.setData({
+        remainingSeconds: 0
+      })
+    }
   },
 
   onRename(e) {
@@ -218,8 +344,13 @@ Page({
       success: (res) => {
         if (res.confirm) {
           // 如果正在播放，停止
-          if (this.data.currentPlayingId === id) {
+          if (this.data.currentSound && this.data.currentSound.id === id) {
             audioManager.stop()
+            this.clearTimer()
+            this.setData({
+              currentSound: null,
+              isPlaying: false
+            })
           }
 
           const result = recorderManager.deleteRecording(id)
@@ -244,6 +375,7 @@ Page({
     if (this.data.timerInterval) {
       clearInterval(this.data.timerInterval)
     }
+    this.clearTimer()
     if (this.data.isRecording) {
       recorderManager.stopRecording()
     }

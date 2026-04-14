@@ -1,4 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "sound-card": "../../components/sound-card/sound-card",
+    "player-bar": "../../components/player-bar/player-bar"
+  },
   "navigationBarTitleText": "我的录音"
 }

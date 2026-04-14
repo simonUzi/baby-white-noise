@@ -1,61 +1,13 @@
 .container {
   min-height: 100vh;
   padding: 20rpx;
-  padding-bottom: 160rpx;
+  /* 留出 player-bar 和 record-button 的空间 */
+  padding-bottom: 240rpx;
   background-color: #f5f7fa;
 }
 
 .recordings-list {
   margin-bottom: 20rpx;
-}
-
-.recording-item {
-  background: white;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.recording-info {
-  flex: 1;
-}
-
-.recording-name {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8rpx;
-}
-
-.recording-meta {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.recording-actions {
-  display: flex;
-}
-
-.action-btn {
-  font-size: 24rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 6rpx;
-  background: #f0f0f0;
-  color: #666;
-  line-height: 1.4;
-  margin-left: 8rpx;
-}
-
-.action-btn:first-child {
-  margin-left: 0;
-}
-
-.action-btn.delete {
-  background: #ffebee;
-  color: #f44336;
 }
 
 .empty-state {
@@ -86,8 +38,9 @@
   bottom: 0;
   left: 0;
   right: 0;
+  /* player-bar 占了约 100rpx，所以把录音按钮放在它上面 */
   padding: 20rpx;
-  padding-bottom: 40rpx;
+  padding-bottom: 140rpx;
   background: #f5f7fa;
   box-sizing: border-box;
 }
@@ -119,6 +72,70 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+/* 弹窗样式和首页保持一致 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0, 50%);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 80%;
+  background: white;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.timer-picker {
+  margin-bottom: 30rpx;
+}
+
+.picker-display {
+  font-size: 28rpx;
+  color: #333;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 20rpx;
+  justify-content: flex-end;
+}
+
+.modal-buttons .btn {
+  min-width: 140rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.modal-buttons .btn.cancel {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.modal-buttons .btn.confirm {
+  background: #4A6FA5;
+  color: white;
 }
 
 .recording-overlay {
