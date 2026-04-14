@@ -21,8 +21,25 @@ const STORAGE_KEY = 'userRecordings'
 function getRecordings() {
   try {
     const recordings = wx.getStorageSync(STORAGE_KEY) || [];
-    // Create copy before sorting to avoid mutating the original array
-    return [...recordings].sort((a, b) => b.createTime - a.createTime);
+    // 为旧录音补全默认字段，确保格式和内置声音一致
+    const processed = recordings.map(recording => {
+      // 如果没有 icon，补上默认麦克风图标
+      if (!recording.icon) {
+        recording.icon = '🎤';
+      }
+      // 确保有 category 字段保持格式一致
+      if (!recording.category) {
+        recording.category = 'user';
+        recording.categoryName = '我的录音';
+      }
+      // 确保有 path 字段（旧版本只有 filePath）
+      if (!recording.path && recording.filePath) {
+        recording.path = recording.filePath;
+      }
+      return recording;
+    });
+    // 按创建时间倒序排列
+    return processed.sort((a, b) => b.createTime - a.createTime);
   } catch (e) {
     console.error('读取录音列表失败', e);
     return [];
@@ -100,15 +117,17 @@ function saveRecording(name, tempFilePath, duration) {
     // 复制临时文件到用户数据目录
     fs.copyFileSync(tempFilePath, savedPath)
 
-    // 创建录音元数据
+    // 创建录音元数据 - 字段和内置声音完全一致
     const recording = {
       id,
       name: name || `录音 ${new Date().toLocaleString()}`,
+      category: 'user',
+      categoryName: '我的录音',
+      icon: '🎤',
       path: savedPath,
       filePath: savedPath,
       duration: Math.round(duration / 1000),
-      createTime: Date.now(),
-      icon: '🎤'  // 用户录音默认麦克风图标，保持和内置声音卡片格式一致
+      createTime: Date.now()
     }
 
     // 添加到列表并保存
