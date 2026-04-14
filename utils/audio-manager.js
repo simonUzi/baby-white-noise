@@ -74,6 +74,7 @@ function play(sound) {
 
   // 加载新音频并播放
   currentSound = sound;
+  isPlaying = false;
   innerAudioContext.src = sound.path;
 
   // 直接调用 play，如果遇到 -1000 错误会在 onError 中处理
@@ -108,9 +109,14 @@ function play(sound) {
     }
   };
 
-  // 确保停止后重新播放新加载
+  // 确保停止后重新播放新加载，使用 setTimeout 确保 src 更新完成再播放
   innerAudioContext.stop();
-  innerAudioContext.play();
+  setTimeout(() => {
+    if (innerAudioContext && currentSound && currentSound.id === sound.id) {
+      innerAudioContext.play();
+      isPlaying = true;
+    }
+  }, 100);
   isPlaying = true;
 
   return { currentSound, isPlaying };
