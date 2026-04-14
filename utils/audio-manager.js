@@ -80,7 +80,9 @@ function play(sound) {
   // 我们在 onError 中添加分包加载重试逻辑
   const originalOnError = innerAudioContext.onError;
   innerAudioContext.onError = (err) => {
-    if (err.errCode === -1000 && !isLoadingSubpackage) {
+    // 只有内置声音（路径以 /assets/ 开头）才尝试分包加载重试
+    // 用户录音存在用户数据目录，不需要分包重试
+    if (err.errCode === -1000 && !isLoadingSubpackage && sound.path.startsWith('/assets/')) {
       // 找不到文件，可能是分包未加载，尝试主动加载分包后重试
       console.log('音频文件找不到，尝试加载 assets 分包并重试');
       wx.showLoading({
