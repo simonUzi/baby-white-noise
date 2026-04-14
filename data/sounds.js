@@ -26,22 +26,6 @@ const sounds = [
     path: '/assets/audio/ocean-wave.mp3'
   },
   {
-    id: 'mountain-wind',
-    name: '山间风声',
-    category: 'nature',
-    categoryName: '自然声音',
-    icon: '🍃',
-    path: '/assets/audio/mountain-wind.mp3'
-  },
-  {
-    id: 'stream',
-    name: '溪流流水',
-    category: 'nature',
-    categoryName: '自然声音',
-    icon: '💧',
-    path: '/assets/audio/stream.mp3'
-  },
-  {
     id: 'forest-bird',
     name: '森林鸟鸣',
     category: 'nature',
@@ -51,14 +35,6 @@ const sounds = [
   },
 
   // 环境声音
-  {
-    id: 'vacuum',
-    name: '吸尘器',
-    category: 'environment',
-    categoryName: '环境声音',
-    icon: '🧹',
-    path: '/assets/audio/vacuum.mp3'
-  },
   {
     id: 'hairdryer',
     name: '吹风机',
@@ -74,14 +50,6 @@ const sounds = [
     categoryName: '环境声音',
     icon: '🪭',
     path: '/assets/audio/fan.mp3'
-  },
-  {
-    id: 'ac',
-    name: '空调噪音',
-    category: 'environment',
-    categoryName: '环境声音',
-    icon: '❄️',
-    path: '/assets/audio/ac.mp3'
   },
   {
     id: 'train',
