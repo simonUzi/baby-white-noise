@@ -4,29 +4,32 @@ let currentSound = null;
 let isPlaying = false;
 let isLoadingSubpackage = false;
 
-// 初始化
+// 初始化/重新创建
 function init() {
-  if (!innerAudioContext) {
-    innerAudioContext = wx.createInnerAudioContext();
-    innerAudioContext.loop = true; // 循环播放
-    innerAudioContext.onError((err) => {
-      console.error('音频播放错误', err);
-      let errMsg = '音频加载失败';
-      if (err.errCode === -1000) {
-        errMsg = '找不到音频文件，请检查文件名和路径';
-      } else if (err.errCode === -1001) {
-        errMsg = '音频解码失败，请检查文件格式';
-      }
-      wx.showToast({
-        title: errMsg,
-        icon: 'none',
-        duration: 2000
-      });
-    });
-    innerAudioContext.onCanplay(() => {
-      console.log('音频加载成功');
-    });
+  // 如果已经存在，销毁旧的重新创建，确保不会缓存旧音源
+  if (innerAudioContext) {
+    innerAudioContext.destroy();
+    innerAudioContext = null;
   }
+  innerAudioContext = wx.createInnerAudioContext();
+  innerAudioContext.loop = true; // 循环播放
+  innerAudioContext.onError((err) => {
+    console.error('音频播放错误', err);
+    let errMsg = '音频加载失败';
+    if (err.errCode === -1000) {
+      errMsg = '找不到音频文件，请检查文件名和路径';
+    } else if (err.errCode === -1001) {
+      errMsg = '音频解码失败，请检查文件格式';
+    }
+    wx.showToast({
+      title: errMsg,
+      icon: 'none',
+      duration: 2000
+    });
+  });
+  innerAudioContext.onCanplay(() => {
+    console.log('音频加载成功');
+  });
 }
 
 // 加载 assets 分包
@@ -55,6 +58,7 @@ function loadAssetsSubpackage() {
 
 // 播放指定声音
 function play(sound) {
+  // 每次播放重新创建播放器，确保不会缓存旧音源
   init();
 
   // 如果正在播放同一个，暂停或继续
@@ -67,12 +71,7 @@ function play(sound) {
     return { currentSound, isPlaying };
   }
 
-  // 停止当前播放
-  if (innerAudioContext) {
-    innerAudioContext.stop();
-  }
-
-  // 加载新音频并播放
+  // 加载新音频并播放 - innerAudioContext 已经重新创建，肯定是新的
   currentSound = sound;
   isPlaying = false;
   innerAudioContext.src = sound.path;
@@ -109,14 +108,8 @@ function play(sound) {
     }
   };
 
-  // 确保停止后重新播放新加载，使用 setTimeout 确保 src 更新完成再播放
-  innerAudioContext.stop();
-  setTimeout(() => {
-    if (innerAudioContext && currentSound && currentSound.id === sound.id) {
-      innerAudioContext.play();
-      isPlaying = true;
-    }
-  }, 100);
+  // 播放器已经重新创建，直接播放
+  innerAudioContext.play();
   isPlaying = true;
 
   return { currentSound, isPlaying };
