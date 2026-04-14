@@ -186,6 +186,23 @@ Page({
     })
   },
 
+  // 长按卡片弹出操作菜单
+  showActionSheet(e) {
+    const id = e.currentTarget.dataset.id
+    this._currentActionId = id
+    wx.showActionSheet({
+      itemList: ['重命名', '删除'],
+      itemColor: '#333',
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          this.onRename()
+        } else if (res.tapIndex === 1) {
+          this.onDelete()
+        }
+      }
+    })
+  },
+
   onPlayToggle() {
     if (!this.data.currentSound) {
       wx.showToast({
@@ -293,8 +310,8 @@ Page({
     }
   },
 
-  onRename(e) {
-    const id = e.currentTarget.dataset.id
+  onRename() {
+    const id = this._currentActionId
     const recording = this.data.recordings.find(r => r.id === id)
     if (!recording) return
 
@@ -332,8 +349,8 @@ Page({
     })
   },
 
-  onDelete(e) {
-    const id = e.currentTarget.dataset.id
+  onDelete() {
+    const id = this._currentActionId
     const recording = this.data.recordings.find(r => r.id === id)
     if (!recording) return
 

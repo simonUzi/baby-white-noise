@@ -24,40 +24,12 @@
   z-index: 100;
 }
 
-.recordings-list {
-  margin-bottom: 20rpx;
-}
-
-.recording-item {
-  background: white;
-  border-radius: 12rpx;
-  margin-bottom: 16rpx;
-  overflow: hidden;
-}
-
-.recording-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 20rpx 16rpx;
-}
-
-.action-btn {
-  font-size: 24rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 6rpx;
-  background: #f0f0f0;
-  color: #666;
-  line-height: 1.4;
-  margin-left: 8rpx;
-}
-
-.action-btn:first-child {
-  margin-left: 0;
-}
-
-.action-btn.delete {
-  background: #ffebee;
-  color: #f44336;
+/* 网格布局，和首页声音列表完全一致 */
+.sound-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding: 0 10rpx;
 }
 
 .empty-state {
