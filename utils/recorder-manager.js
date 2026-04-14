@@ -104,6 +104,7 @@ function saveRecording(name, tempFilePath, duration) {
     const recording = {
       id,
       name: name || `录音 ${new Date().toLocaleString()}`,
+      path: savedPath,
       filePath: savedPath,
       duration: Math.round(duration / 1000),
       createTime: Date.now()

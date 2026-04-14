@@ -1,3 +1,4 @@
+<!-- 可滚动录音列表 -->
 <view class="container">
   <!-- 录音列表 -->
   <view class="recordings-list" wx:if="{{recordings.length > 0}}">
@@ -22,7 +23,13 @@
     <view class="empty-hint">点击下方按钮开始录制</view>
   </view>
 
-  <!-- 底部播放控制栏 -->
+  <!-- 底部留出空间，不被固定栏挡住 -->
+  <view class="bottom-spacer"></view>
+</view>
+
+<!-- 底部固定区域：播放控制栏 + 录音按钮 -->
+<view class="bottom-fixed">
+  <!-- 播放控制栏 -->
   <player-bar
     currentSound="{{currentSound}}"
     isPlaying="{{isPlaying}}"
@@ -32,7 +39,7 @@
     bindstop="onStop"
   />
 
-  <!-- 底部录音按钮 -->
+  <!-- 录音按钮 -->
   <view class="record-button-wrapper">
     <view class="record-count-hint">最多保存 {{maxRecordings}} 条，每条最长 {{maxDuration}}s</view>
     <button
@@ -42,31 +49,31 @@
       {{isRecording ? '停止录音 (' + recordingTime + 's)' : '开始录音'}}
     </button>
   </view>
+</view>
 
-  <!-- 定时选择弹窗 -->
-  <view wx:if="{{showTimerPicker}}" class="modal-overlay" bindtap="closeTimerPicker">
-    <view class="modal-content" catchtap>
-      <view class="modal-title">选择播放时长</view>
-      <view class="timer-picker">
-        <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{timerPickerIndex}}" bindchange="onTimerChange">
-          <view class="picker-display">
-            当前选择: {{timerMinutes}} 分钟
-          </view>
-        </picker>
-      </view>
-      <view class="modal-buttons">
-        <button class="btn cancel" bindtap="closeTimerPicker">取消</button>
-        <button class="btn confirm" bindtap="startTimer">确定</button>
-      </view>
+<!-- 定时选择弹窗 -->
+<view wx:if="{{showTimerPicker}}" class="modal-overlay" bindtap="closeTimerPicker">
+  <view class="modal-content" catchtap>
+    <view class="modal-title">选择播放时长</view>
+    <view class="timer-picker">
+      <picker mode="selector" range="{{[5,10,15,20,25,30,45,60,90,120]}}" value="{{timerPickerIndex}}" bindchange="onTimerChange">
+        <view class="picker-display">
+          当前选择: {{timerMinutes}} 分钟
+        </view>
+      </picker>
+    </view>
+    <view class="modal-buttons">
+      <button class="btn cancel" bindtap="closeTimerPicker">取消</button>
+      <button class="btn confirm" bindtap="startTimer">确定</button>
     </view>
   </view>
+</view>
 
-  <!-- 录音中蒙版 -->
-  <view wx:if="{{isRecording}}" class="recording-overlay">
-    <view class="recording-indicator">
-      <view class="pulse"></view>
-      <view class="recording-timer">{{recordingTime}}s</view>
-      <view class="recording-hint">录音中，最长30秒自动停止</view>
-    </view>
+<!-- 录音中蒙版 -->
+<view wx:if="{{isRecording}}" class="recording-overlay">
+  <view class="recording-indicator">
+    <view class="pulse"></view>
+    <view class="recording-timer">{{recordingTime}}s</view>
+    <view class="recording-hint">录音中，最长30秒自动停止</view>
   </view>
 </view>

@@ -154,6 +154,7 @@ Page({
 
   onPlaySound(e) {
     const sound = e.detail.sound
+    // 每次点击都确保播放点击的那个声音
     const status = audioManager.play(sound)
     this.setData({
       currentSound: status.currentSound,
