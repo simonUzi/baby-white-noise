@@ -107,7 +107,8 @@ function saveRecording(name, tempFilePath, duration) {
       path: savedPath,
       filePath: savedPath,
       duration: Math.round(duration / 1000),
-      createTime: Date.now()
+      createTime: Date.now(),
+      icon: '🎤'  // 用户录音默认麦克风图标，保持和内置声音卡片格式一致
     }
 
     // 添加到列表并保存
