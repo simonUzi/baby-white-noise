@@ -1,13 +1,18 @@
 <view class="container">
   <!-- 录音列表 -->
   <view class="recordings-list" wx:if="{{recordings.length > 0}}">
-    <sound-card
-      wx:for="{{recordings}}" wx:for-item="sound" wx:key="id"
-      sound="{{sound}}"
-      isPlaying="{{isPlaying && currentSound && currentSound.id === sound.id}}"
-      bindplay="onPlaySound"
-      bindtogglefavorite="onToggleFavorite"
-    />
+    <view class="recording-item" wx:for="{{recordings}}" wx:key="id">
+      <sound-card
+        sound="{{item}}"
+        isPlaying="{{isPlaying && currentSound && currentSound.id === item.id}}"
+        bindplay="onPlaySound"
+        bindtogglefavorite="onToggleFavorite"
+      />
+      <view class="recording-actions">
+        <button class="action-btn" bindtap="onRename" data-id="{{item.id}}">重命名</button>
+        <button class="action-btn delete" bindtap="onDelete" data-id="{{item.id}}">删除</button>
+      </view>
+    </view>
   </view>
 
   <!-- 空状态 -->
