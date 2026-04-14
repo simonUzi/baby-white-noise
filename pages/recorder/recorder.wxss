@@ -1,25 +1,27 @@
 .container {
   min-height: 100vh;
   padding: 20rpx;
-  /* 留出底部固定栏空间（player-bar + 录音按钮 + tabBar）*/
-  padding-bottom: 360rpx;
+  /* 留出底部按钮高度 + tabBar 空间 */
+  padding-bottom: 240rpx;
   background-color: #f5f7fa;
 }
 
 .bottom-spacer {
-  height: 220rpx;
+  height: 140rpx;
 }
 
-.bottom-fixed {
+/* 悬浮录音按钮：紧贴 tabBar 上方 */
+.float-record-button {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   background: #f5f7fa;
   box-sizing: border-box;
-  padding: 10rpx 20rpx;
-  /* 留出 tabBar 高度，避免被挡住 */
-  padding-bottom: 100rpx;
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
 }
 
 .recordings-list {
@@ -81,10 +83,6 @@
   font-size: 26rpx;
 }
 
-.record-button-wrapper {
-  /* 已经在 bottom-fixed 容器中，不需要再 fixed */
-  padding: 20rpx 0;
-}
 
 .record-count-hint {
   text-align: center;
@@ -220,4 +218,18 @@
 .recording-hint {
   font-size: 26rpx;
   opacity: 0.8;
+  margin-bottom: 40rpx;
+}
+
+.stop-record-btn {
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f44336;
+  color: white;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  border: none;
+  margin: 0 auto;
+  padding: 0;
 }

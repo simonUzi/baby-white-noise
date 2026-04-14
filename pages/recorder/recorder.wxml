@@ -23,32 +23,19 @@
     <view class="empty-hint">点击下方按钮开始录制</view>
   </view>
 
-  <!-- 底部留出空间，不被固定栏挡住 -->
+  <!-- 底部留出空间，不被悬浮按钮挡住 -->
   <view class="bottom-spacer"></view>
 </view>
 
-<!-- 底部固定区域：播放控制栏 + 录音按钮 -->
-<view class="bottom-fixed">
-  <!-- 播放控制栏 -->
-  <player-bar
-    currentSound="{{currentSound}}"
-    isPlaying="{{isPlaying}}"
-    remainingSeconds="{{remainingSeconds}}"
-    bindplaytoggle="onPlayToggle"
-    bindsettimer="openTimerPicker"
-    bindstop="onStop"
-  />
-
-  <!-- 录音按钮 -->
-  <view class="record-button-wrapper">
-    <view class="record-count-hint">最多保存 {{maxRecordings}} 条，每条最长 {{maxDuration}}s</view>
-    <button
-      class="{{isRecording ? 'record-button recording' : 'record-button'}}"
-      bindtap="{{isRecording ? 'stopRecording' : 'startRecording'}}"
-    >
-      {{isRecording ? '停止录音 (' + recordingTime + 's)' : '开始录音'}}
-    </button>
-  </view>
+<!-- 悬浮固定：录音按钮（在 tabBar 上方） -->
+<view class="float-record-button">
+  <view class="record-count-hint">最多保存 {{maxRecordings}} 条，每条最长 {{maxDuration}}s</view>
+  <button
+    class="{{isRecording ? 'record-button recording' : 'record-button'}}"
+    bindtap="{{isRecording ? 'stopRecording' : 'startRecording'}}"
+  >
+    {{isRecording ? '停止录音 (' + recordingTime + 's)' : '开始录音'}}
+  </button>
 </view>
 
 <!-- 定时选择弹窗 -->
@@ -74,6 +61,7 @@
   <view class="recording-indicator">
     <view class="pulse"></view>
     <view class="recording-timer">{{recordingTime}}s</view>
-    <view class="recording-hint">录音中，最长30秒自动停止</view>
+    <view class="recording-hint">录音中，点击下方按钮随时停止</view>
+    <button class="stop-record-btn" bindtap="stopRecording">停止录音</button>
   </view>
 </view>
