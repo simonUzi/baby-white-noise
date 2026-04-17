@@ -46,6 +46,12 @@ function getRecordings() {
         recording.path = `wxfile://${recording.filePath}`;
         console.log('自动补全路径前缀:', recording.path);
       }
+      // 防止重复添加前缀 - 如果 filePath 已经在 path 里，检查是否重复
+      if (recording.path.startsWith('wxfile://wxfile://') || recording.path.startsWith('file://file://')) {
+        // 去掉重复前缀
+        recording.path = recording.path.replace(/^(wxfile:\/\/|file:\/\/)\1/, '$1');
+        console.log('修复重复前缀:', recording.path);
+      }
 
       console.log('处理完成录音:', recording.name, 'path=', recording.path);
       return recording;
