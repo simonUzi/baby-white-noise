@@ -43,6 +43,16 @@ Page({
   },
 
   startRecording() {
+    // 开始录音前，停止当前正在播放的音频
+    if (this.data.currentSound) {
+      this.clearTimer()
+      audioManager.stop()
+      this.setData({
+        currentSound: null,
+        isPlaying: false
+      })
+    }
+
     // 检查权限
     wx.authorize({
       scope: 'scope.record',

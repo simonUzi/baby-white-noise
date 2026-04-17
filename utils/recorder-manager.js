@@ -38,7 +38,7 @@ function getRecordings() {
       }
       // 用户录音本地文件需要加上 file:// 前缀才能播放
       // 检查是否已经有 file:// 前缀了，避免重复加
-      if (recording.filePath && !recording.path.startsWith('file://')) {
+      if (recording.filePath && !recording.path.startsWith('file://') && !recording.path.startsWith('wxfile://') && !recording.path.startsWith('http://tmp/')) {
         recording.path = `file://${recording.filePath}`;
       }
       return recording;
