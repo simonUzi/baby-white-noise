@@ -122,7 +122,9 @@ function saveRecording(name, tempFilePath, duration) {
     // 复制临时文件到用户数据目录
     fs.copyFileSync(tempFilePath, savedPath)
 
-    // 创建录音元数据 - 用户录音在本地需要加上 wxfile:// 前缀才能播放（微信标准）
+    // 创建录音元数据
+    // 微信真机播放本地文件，有些版本需要 wxfile:// 前缀，有些不需要
+    // 保存原始 filePath，path 加上前缀保证能播放
     const recording = {
       id,
       name: name || `录音 ${new Date().toLocaleString()}`,

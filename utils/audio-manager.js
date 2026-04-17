@@ -97,11 +97,12 @@ function play(sound) {
             innerAudioContext.play();
             isPlaying = true;
           }
+          // 分包加载成功，不显示错误提示
         })
         .catch((loadErr) => {
           wx.hideLoading();
           console.error('分包加载失败', loadErr);
-          // 调用原错误处理
+          // 只有分包加载失败才调用原错误处理
           if (originalOnError) {
             originalOnError.call(innerAudioContext, err);
           }
