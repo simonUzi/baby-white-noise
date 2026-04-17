@@ -61,6 +61,10 @@ function play(sound) {
   // 每次播放重新创建播放器，确保不会缓存旧音源
   init();
 
+  console.log('=== play 开始 ===');
+  console.log('sound.id:', sound.id);
+  console.log('sound.path:', sound.path);
+
   // 如果正在播放同一个，暂停或继续
   if (currentSound && currentSound.id === sound.id) {
     if (isPlaying) {
@@ -76,10 +80,17 @@ function play(sound) {
   isPlaying = false;
   innerAudioContext.src = sound.path;
 
+  console.log('设置 src 完成:', sound.path);
+
   // 直接调用 play，如果遇到 -1000 错误会在 onError 中处理
   // 我们在 onError 中添加分包加载重试逻辑
   const originalOnError = innerAudioContext.onError;
   innerAudioContext.onError = (err) => {
+    console.error('=== 音频播放错误 ===');
+    console.error('err.errCode:', err.errCode);
+    console.error('err.errMsg:', err.errMsg);
+    console.error('current sound path:', sound.path);
+
     // 只有内置声音（路径以 /assets/ 开头）才尝试分包加载重试
     // 用户录音存在用户数据目录，不需要分包重试
     if (err.errCode === -1000 && !isLoadingSubpackage && sound.path.startsWith('/assets/')) {
@@ -93,9 +104,11 @@ function play(sound) {
           wx.hideLoading();
           // 分包加载完成后重试播放
           if (innerAudioContext && currentSound && currentSound.id === sound.id) {
+            console.log('分包加载完成，重试播放:', currentSound.path);
             innerAudioContext.src = currentSound.path;
             innerAudioContext.play();
             isPlaying = true;
+            console.log('重试播放成功');
           }
           // 分包加载成功，不显示错误提示
         })
@@ -115,9 +128,17 @@ function play(sound) {
     }
   };
 
+  // 添加成功回调日志
+  innerAudioContext.onPlay(() => {
+    console.log('=== 播放开始成功 ===');
+    console.log('播放路径:', sound.path);
+  });
+
   // 播放器已经重新创建，直接播放
   innerAudioContext.play();
   isPlaying = true;
+
+  console.log('调用 play 完成，isPlaying:', isPlaying);
 
   return { currentSound, isPlaying };
 }

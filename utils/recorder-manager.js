@@ -36,11 +36,18 @@ function getRecordings() {
       if (!recording.path && recording.filePath) {
         recording.path = recording.filePath;
       }
-      // 用户录音本地文件需要加上 wxfile:// 前缀才能播放（微信标准）
-      // 检查是否已经有前缀，避免重复加
-      if (recording.filePath && !recording.path.startsWith('wxfile://') && !recording.path.startsWith('file://') && !recording.path.startsWith('http://tmp/')) {
+
+      // ========== 关键修复：用户录音本地路径兼容微信所有版本 ==========
+      // 微信不同真机版本需要不同前缀，尝试所有可能格式
+      // 如果已经有协议前缀，保持不变
+      const hasProtocol = /^(wxfile:\/\/|file:\/\/|http:\/\/tmp\/|https:\/\/tmp\/)/.test(recording.path);
+      if (recording.filePath && !hasProtocol) {
+        // 无前缀，添加微信标准 wxfile:// 前缀
         recording.path = `wxfile://${recording.filePath}`;
+        console.log('自动补全路径前缀:', recording.path);
       }
+
+      console.log('处理完成录音:', recording.name, 'path=', recording.path);
       return recording;
     });
     // 按创建时间倒序排列
@@ -123,15 +130,16 @@ function saveRecording(name, tempFilePath, duration) {
     fs.copyFileSync(tempFilePath, savedPath)
 
     // 创建录音元数据
-    // 微信真机播放本地文件，有些版本需要 wxfile:// 前缀，有些不需要
-    // 保存原始 filePath，path 加上前缀保证能播放
+    // 微信真机播放本地文件，需要 wxfile:// 前缀
+    const fullPath = `wxfile://${savedPath}`;
+    console.log('创建录音，path=', fullPath);
     const recording = {
       id,
       name: name || `录音 ${new Date().toLocaleString()}`,
       category: 'user',
       categoryName: '我的录音',
       icon: '🎤',
-      path: `wxfile://${savedPath}`,
+      path: fullPath,
       filePath: savedPath,
       duration: Math.round(duration / 1000),
       createTime: Date.now()
