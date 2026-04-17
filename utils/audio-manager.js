@@ -82,7 +82,8 @@ function play(sound) {
 
   console.log('设置 src 完成:', sound.path);
 
-  // 保存重试状态：用户录音如果一种前缀失败，自动试另一种
+  // 保存重试状态：用户录音如果一种前缀失败，自动试下一种
+  // 兼容三种格式：wxfile:// / file:// / 原始路径无前缀
   let retryCount = 0;
   const originalOnError = innerAudioContext.onError;
   innerAudioContext.onError = (err) => {
@@ -91,63 +92,65 @@ function play(sound) {
     console.error('err.errMsg:', err.errMsg);
     console.error('current sound path:', sound.path);
 
-    // 只有内置声音（路径以 /assets/ 开头）才尝试分包加载重试
-    // 用户录音存在用户数据目录，不需要分包重试
-    if (err.errCode === -1000 || err.errCode === 10001) {
-      if (sound.filePath && retryCount === 0 && sound.path.startsWith('wxfile://')) {
-        // wxfile:// 前缀失败，自动尝试 file:// 前缀（兼容不同微信版本）
+    // 用户录音三种格式自动重试：wxfile:// → file:// → 原始路径
+    if ((err.errCode === -1000 || err.errCode === 10001) && sound.filePath) {
+      if (retryCount === 0 && sound.path.startsWith('wxfile://')) {
+        // wxfile:// 失败，尝试 file://
         console.log('wxfile:// 前缀播放失败，尝试 file:// 重试');
         retryCount = 1;
         innerAudioContext.src = `file://${sound.filePath}`;
         innerAudioContext.play();
-        console.log('已经切换到 file:// 重试');
         return;
       }
-      if (sound.filePath && retryCount === 0 && sound.path.startsWith('file://')) {
-        // file:// 前缀失败，自动尝试 wxfile:// 前缀
-        console.log('file:// 前缀播放失败，尝试 wxfile:// 重试');
+      if (retryCount === 1 && sound.path.startsWith('file://')) {
+        // file:// 失败，尝试原始路径（无前缀）
+        console.log('file:// 前缀播放失败，尝试原始路径重试');
+        retryCount = 2;
+        innerAudioContext.src = sound.filePath;
+        innerAudioContext.play();
+        return;
+      }
+      if (retryCount === 0 && !sound.path.startsWith('wxfile://') && !sound.path.startsWith('file://')) {
+        // 原始路径失败，尝试 wxfile://
+        console.log('原始路径播放失败，尝试 wxfile:// 重试');
         retryCount = 1;
         innerAudioContext.src = `wxfile://${sound.filePath}`;
         innerAudioContext.play();
-        console.log('已经切换到 wxfile:// 重试');
         return;
       }
-      // 还是失败，而且是内置音频，尝试分包加载
-      if (err.errCode === -1000 && !isLoadingSubpackage && sound.path.startsWith('/assets/')) {
-        // 找不到文件，可能是分包未加载，尝试主动加载分包后重试
-        console.log('音频文件找不到，尝试加载 assets 分包并重试');
-        wx.showLoading({
-          title: '加载资源中...'
+    }
+
+    // 所有重试都失败了，再走原来的错误处理
+    // 只有内置声音（路径以 /assets/ 开头）才尝试分包加载重试
+    if (err.errCode === -1000 && !isLoadingSubpackage && sound.path.startsWith('/assets/')) {
+      // 找不到文件，可能是分包未加载，尝试主动加载分包后重试
+      console.log('音频文件找不到，尝试加载 assets 分包并重试');
+      wx.showLoading({
+        title: '加载资源中...'
+      });
+      loadAssetsSubpackage()
+        .then(() => {
+          wx.hideLoading();
+          // 分包加载完成后重试播放
+          if (innerAudioContext && currentSound && currentSound.id === sound.id) {
+            console.log('分包加载完成，重试播放:', currentSound.path);
+            innerAudioContext.src = currentSound.path;
+            innerAudioContext.play();
+            isPlaying = true;
+            console.log('重试播放成功');
+          }
+          // 分包加载成功，不显示错误提示
+        })
+        .catch((loadErr) => {
+          wx.hideLoading();
+          console.error('分包加载失败', loadErr);
+          // 只有分包加载失败才调用原错误处理
+          if (originalOnError) {
+            originalOnError.call(innerAudioContext, err);
+          }
         });
-        loadAssetsSubpackage()
-          .then(() => {
-            wx.hideLoading();
-            // 分包加载完成后重试播放
-            if (innerAudioContext && currentSound && currentSound.id === sound.id) {
-              console.log('分包加载完成，重试播放:', currentSound.path);
-              innerAudioContext.src = currentSound.path;
-              innerAudioContext.play();
-              isPlaying = true;
-              console.log('重试播放成功');
-            }
-            // 分包加载成功，不显示错误提示
-          })
-          .catch((loadErr) => {
-            wx.hideLoading();
-            console.error('分包加载失败', loadErr);
-            // 只有分包加载失败才调用原错误处理
-            if (originalOnError) {
-              originalOnError.call(innerAudioContext, err);
-            }
-          });
-      } else {
-        // 其他错误或正在加载中，使用原错误处理
-        if (originalOnError) {
-          originalOnError.call(innerAudioContext, err);
-        }
-      }
     } else {
-      // 其他错误或正在加载中，使用原错误处理
+      // 不是分包问题，或者所有重试都失败，显示错误
       if (originalOnError) {
         originalOnError.call(innerAudioContext, err);
       }
