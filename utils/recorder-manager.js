@@ -36,6 +36,11 @@ function getRecordings() {
       if (!recording.path && recording.filePath) {
         recording.path = recording.filePath;
       }
+      // 用户录音本地文件需要加上 file:// 前缀才能播放
+      // 检查是否已经有 file:// 前缀了，避免重复加
+      if (recording.filePath && !recording.path.startsWith('file://')) {
+        recording.path = `file://${recording.filePath}`;
+      }
       return recording;
     });
     // 按创建时间倒序排列
@@ -117,14 +122,14 @@ function saveRecording(name, tempFilePath, duration) {
     // 复制临时文件到用户数据目录
     fs.copyFileSync(tempFilePath, savedPath)
 
-    // 创建录音元数据 - 字段和内置声音完全一致
+    // 创建录音元数据 - 用户录音在本地需要加上 file:// 前缀才能播放
     const recording = {
       id,
       name: name || `录音 ${new Date().toLocaleString()}`,
       category: 'user',
       categoryName: '我的录音',
       icon: '🎤',
-      path: savedPath,
+      path: `file://${savedPath}`,
       filePath: savedPath,
       duration: Math.round(duration / 1000),
       createTime: Date.now()

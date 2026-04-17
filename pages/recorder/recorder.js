@@ -52,7 +52,7 @@ Page({
       fail: () => {
         wx.showModal({
           title: '需要麦克风权限',
-          content: '请在设置中打开麦克风权限才能录音',
+          content: '请在设置页面找到「麦克风」，打开权限开关才能录音',
           confirmText: '去设置',
           success: (res) => {
             if (res.confirm) {
