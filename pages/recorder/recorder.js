@@ -53,23 +53,52 @@ Page({
       })
     }
 
-    // 检查权限
-    wx.authorize({
-      scope: 'scope.record',
-      success: () => {
-        this.doStartRecording()
-      },
-      fail: () => {
-        wx.showModal({
-          title: '需要麦克风权限',
-          content: '请在设置页面找到「麦克风」，打开权限开关才能录音',
-          confirmText: '去设置',
-          success: (res) => {
-            if (res.confirm) {
-              wx.openSetting()
+    // 先获取当前权限状态
+    wx.getSetting({
+      success: (res) => {
+        if (res.authSetting['scope.record']) {
+          // 已有权限，直接开始录音
+          this.doStartRecording()
+        } else {
+          // 没有权限，先尝试申请授权
+          wx.authorize({
+            scope: 'scope.record',
+            success: () => {
+              this.doStartRecording()
+            },
+            fail: () => {
+              // 用户拒绝过授权，需要引导去设置页面开启
+              wx.showModal({
+                title: '需要麦克风权限',
+                content: '请在设置页面打开「麦克风」权限开关，才能开始录音',
+                confirmText: '去设置',
+                success: (resModal) => {
+                  if (resModal.confirm) {
+                    // 打开设置页面，用户设置完成返回后自动重试
+                    const openSettingCallback = (resSetting) => {
+                      if (resSetting.authSetting['scope.record']) {
+                        // 用户开启了权限，直接开始录音
+                        this.doStartRecording()
+                      }
+                    }
+                    // 优先使用 wx.openAppSetting（微信推荐方式）
+                    // 直接跳转到当前小程序的设置页面，用户可以直接看到麦克风权限开关
+                    if (wx.openAppSetting) {
+                      wx.openAppSetting({
+                        success: openSettingCallback
+                      })
+                    } else {
+                      // 兼容旧版本微信
+                      wx.openSetting({
+                        success: openSettingCallback
+                      })
+                    }
+                  }
+                }
+              })
             }
-          }
-        })
+          })
+        }
       }
     })
   },
