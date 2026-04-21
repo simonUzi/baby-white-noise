@@ -82,17 +82,32 @@ function startRecording() {
   }
 
   return new Promise((resolve, reject) => {
-    currentResolve = resolve
-    currentReject = reject
-    isRecording = true
-    startTime = Date.now();
+    // 再次检查权限，确保有权限才启动录音
+    wx.getSetting({
+      success: (res) => {
+        if (!res.authSetting['scope.record']) {
+          isRecording = false
+          reject(new Error('没有麦克风权限: ' + JSON.stringify(res.authSetting)))
+          return
+        }
 
-    recorderManager.start({
-      duration: MAX_DURATION,
-      sampleRate: SAMPLE_RATE,
-      numberOfChannels: NUMBER_OF_CHANNELS,
-      encodeBitRate: ENCODE_BIT_RATE,
-      format: 'mp3'
+        currentResolve = resolve
+        currentReject = reject
+        isRecording = true
+        startTime = Date.now();
+
+        recorderManager.start({
+          duration: MAX_DURATION,
+          sampleRate: SAMPLE_RATE,
+          numberOfChannels: NUMBER_OF_CHANNELS,
+          encodeBitRate: ENCODE_BIT_RATE,
+          format: 'mp3'
+        })
+      },
+      fail: (err) => {
+        isRecording = false
+        reject(new Error('检查权限失败: ' + (err.errMsg || err.message)))
+      }
     })
   })
 }
