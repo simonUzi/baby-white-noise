@@ -19,6 +19,9 @@ Page({
     remainingSeconds: 0
   },
 
+  // 标记是否正在等待用户从权限设置页面返回
+  _waitingForPermission: false,
+
   onLoad() {
     this.loadRecordings()
   },
@@ -31,6 +34,19 @@ Page({
       isPlaying: status.isPlaying,
       currentSound: status.currentSound
     })
+
+    // 如果是从权限设置页面返回，检查权限是否已开启
+    if (this._waitingForPermission) {
+      this._waitingForPermission = false
+      wx.getSetting({
+        success: (res) => {
+          if (res.authSetting['scope.record']) {
+            // 用户已开启权限，直接开始录音
+            this.doStartRecording()
+          }
+        }
+      })
+    }
   },
 
   loadRecordings() {
@@ -74,24 +90,15 @@ Page({
                 confirmText: '去设置',
                 success: (resModal) => {
                   if (resModal.confirm) {
-                    // 打开设置页面，用户设置完成返回后自动重试
-                    const openSettingCallback = (resSetting) => {
-                      if (resSetting.authSetting['scope.record']) {
-                        // 用户开启了权限，直接开始录音
-                        this.doStartRecording()
-                      }
-                    }
-                    // 优先使用 wx.openAppSetting（微信推荐方式）
-                    // 直接跳转到当前小程序的设置页面，用户可以直接看到麦克风权限开关
+                    // 标记正在等待用户从权限设置页面返回
+                    this._waitingForPermission = true
+                    // 优先使用 wx.openAppSetting（微信官方推荐）
+                    // 直接跳转到当前小程序的设置页面 → 直接显示权限开关
                     if (wx.openAppSetting) {
-                      wx.openAppSetting({
-                        success: openSettingCallback
-                      })
+                      wx.openAppSetting()
                     } else {
                       // 兼容旧版本微信
-                      wx.openSetting({
-                        success: openSettingCallback
-                      })
+                      wx.openSetting()
                     }
                   }
                 }
