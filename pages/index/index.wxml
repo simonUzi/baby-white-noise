@@ -21,7 +21,6 @@
     bindplaytoggle="onPlayToggle"
     bindsettimer="openTimerPicker"
     bindstop="onStop"
-    bindshare="onShareCurrentSound"
   />
 
   <!-- 定时选择弹窗 -->

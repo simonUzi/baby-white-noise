@@ -57,10 +57,6 @@ Page({
     };
   },
 
-  onShareCurrentSound() {
-    // 触发 onShareAppMessage 的调用（用户点击按钮后会自动调）
-    // 实际分享内容由 onShareAppMessage 决定
-  },
 
   onShow() {
     // 每次显示页面更新收藏状态
