@@ -23,6 +23,10 @@ Component({
       this.triggerEvent('settimer');
     },
 
+    onShareTap() {
+      this.triggerEvent('share');
+    },
+
     onStopTap() {
       this.triggerEvent('stop');
     },

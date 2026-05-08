@@ -15,6 +15,9 @@
     <button class="control-btn timer-btn" disabled="{{!currentSound}}" bindtap="onTimerTap">
       ⏱️ 定时
     </button>
+    <button class="control-btn share-btn" disabled="{{!currentSound}}" bindtap="onShareTap">
+      ⏫ 分享
+    </button>
     <button class="control-btn play-btn {{isPlaying ? 'playing' : ''}}" bindtap="onPlayTap">
       {{isPlaying ? '⏸️' : '▶️'}}
     </button>
