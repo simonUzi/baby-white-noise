@@ -51,9 +51,10 @@
   gap: 8rpx;
 }
 
-.timer-btn {
-  background: #f0f0f0;
-  color: #333;
+.timer-btn,
+.share-btn {
+  background: #f0f5fa;
+  color: #4A6FA5;
 }
 
 .play-btn {
