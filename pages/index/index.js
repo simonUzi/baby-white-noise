@@ -13,9 +13,48 @@ Page({
     remainingSeconds: 0
   },
 
-  onLoad() {
+  onLoad(options) {
     this.loadSounds();
     audioManager.init();
+
+    // 如果从分享链接进入，自动播放指定声音
+    if (options && options.soundId) {
+      setTimeout(() => {
+        const soundId = options.soundId;
+        // 找到对应的声音
+        let targetSound = null;
+        for (const cat of this.data.categories) {
+          const found = cat.sounds.find(s => s.id === soundId);
+          if (found) {
+            targetSound = found;
+            break;
+          }
+        }
+        if (targetSound) {
+          const status = audioManager.play(targetSound);
+          this.setData({
+            currentSound: status.currentSound,
+            isPlaying: status.isPlaying
+          });
+        }
+      }, 500);
+    }
+  },
+
+  onShareAppMessage() {
+    const currentSound = this.data.currentSound;
+    if (currentSound) {
+      return {
+        title: `推荐「${currentSound.name}」，哄睡超好用！`,
+        path: `/pages/index/index?soundId=${currentSound.id}`,
+        imageUrl: '' // 留空使用默认截图
+      };
+    }
+    return {
+      title: '我家宝宝听这个5分钟就睡着了！',
+      path: '/pages/index/index',
+      imageUrl: ''
+    };
   },
 
   onShow() {
