@@ -27,6 +27,14 @@
     bindstop="onStop"
   />
 
+  <!-- 推荐给好友卡片 (有收藏内容时显示) -->
+  <view wx:if="{{collectedSounds.length > 0}}" class="share-card">
+    <view class="share-title">🎉 觉得好用？推荐给宝妈好友</view>
+    <button class="share-btn" open-type="share">
+      分享给好友
+    </button>
+  </view>
+
   <!-- 定时选择弹窗 -->
   <view wx:if="{{showTimerPicker}}" class="modal-overlay" bindtap="closeTimerPicker">
     <view class="modal-content" catchtap>

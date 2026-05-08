@@ -179,6 +179,20 @@ Page({
     }
   },
 
+  onShareAppMessage() {
+    const currentSound = this.data.currentSound;
+    if (currentSound) {
+      return {
+        title: `推荐「${currentSound.name}」，哄睡超好用！`,
+        path: `/pages/index/index?soundId=${currentSound.id}`
+      };
+    }
+    return {
+      title: '我家宝宝听这个5分钟就睡着了！',
+      path: '/pages/index/index'
+    };
+  },
+
   onUnload() {
     this.clearTimer();
     audioManager.stop();
