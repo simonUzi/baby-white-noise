@@ -1,4 +1,11 @@
 <view class="container">
+  <!-- 哄睡记录入口 -->
+  <view class="sleep-record-entry" bindtap="goToSleepRecord">
+    <text class="entry-icon">📋</text>
+    <text class="entry-text">我的哄睡日记</text>
+    <text class="entry-arrow">→</text>
+  </view>
+
   <!-- 空状态 -->
   <view wx:if="{{collectedSounds.length === 0}}" class="empty-state">
     <view class="empty-icon">⭐</view>

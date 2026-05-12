@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/recorder/recorder",
-    "pages/collection/collection"
+    "pages/collection/collection",
+    "pages/sleep-record/sleep-record",
+    "pages/sleep-stats/sleep-stats"
   ],
   "subpackages": [
     {

@@ -1,0 +1,111 @@
+.container {
+  padding: 20rpx;
+  padding-bottom: 100rpx;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  padding: 30rpx 0;
+}
+
+.stats-section {
+  background: white;
+  margin: 0 30rpx 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.stats-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+}
+
+.stat-item.highlight {
+  background: #f6ffed;
+  margin: 8rpx -20rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-value.trend {
+  color: #52c41a;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  font-size: 26rpx;
+}
+
+.rank-num {
+  width: 40rpx;
+  font-weight: 600;
+  color: #4A6FA5;
+}
+
+.rank-name {
+  flex: 1;
+  color: #333;
+}
+
+.rank-duration {
+  color: #666;
+  font-weight: 500;
+}
+
+.empty-ranking {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #999;
+  font-size: 26rpx;
+}
+
+.tip-box {
+  background: #fff7e6;
+  margin: 30rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  border-left: 8rpx solid #fa8c16;
+}
+
+.tip-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fa8c16;
+  margin-bottom: 12rpx;
+}
+
+.tip-content {
+  font-size: 26rpx;
+  color: #8b4513;
+  line-height: 1.6;
+}

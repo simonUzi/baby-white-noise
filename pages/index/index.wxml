@@ -1,4 +1,10 @@
 <view class="container">
+  <!-- 哄睡记录中横幅 -->
+  <view wx:if="{{isRecording}}" class="recording-banner">
+    <text class="recording-icon">🛌</text>
+    <text class="recording-text">哄睡中... {{recordingTime}}</text>
+  </view>
+
   <!-- 分类展示声音列表 -->
   <block wx:for="{{categories}}" wx:key="name">
     <view class="category-title">{{item.name}}</view>

@@ -1,0 +1,36 @@
+<view class="container">
+  <view class="page-title">📋 我的哄睡日记</view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{records.length === 0}}" class="empty-state">
+    <view class="empty-icon">💤</view>
+    <view class="empty-text">还没有哄睡记录</view>
+    <view class="empty-hint">播放声音时选择"开始记录"，就能记录哄睡时间啦</view>
+  </view>
+
+  <!-- 记录列表 -->
+  <block wx:for="{{recordsByDate}}" wx:key="date">
+    <view class="date-header">📅 {{item.date}}</view>
+    <block wx:for="{{item.records}}" wx:for-item="record" wx:key="id">
+      <view class="record-card">
+        <view class="record-time">
+          <text>🌙 {{record.startTimeStr}} 开始哄睡</text>
+          <text class="arrow">→</text>
+          <text>{{record.sleepTime}} 睡着</text>
+        </view>
+        <view class="record-detail">
+          <text>哄睡{{record.durationMinutes}}分钟 ✓ {{record.soundName}}</text>
+        </view>
+      </view>
+    </block>
+    <view class="day-summary" wx:if="{{item.earliestSleep}}">
+      <text>🌟 今日最早入睡：{{item.earliestSleep}}</text>
+    </view>
+  </block>
+
+  <!-- 统计入口 -->
+  <view class="stats-entry" bindtap="goToStats" wx:if="{{records.length > 0}}">
+    <text>📊 查看本月哄睡统计</text>
+    <text class="arrow">→</text>
+  </view>
+</view>

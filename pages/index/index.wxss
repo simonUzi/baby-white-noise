@@ -84,3 +84,26 @@
   background: #4A6FA5;
   color: #ffffff;
 }
+
+/* 哄睡记录横幅 */
+.recording-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24rpx 30rpx;
+  margin: 20rpx;
+  margin-top: 0;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+.recording-icon {
+  font-size: 36rpx;
+}
+
+.recording-text {
+  font-size: 28rpx;
+  font-weight: 500;
+}

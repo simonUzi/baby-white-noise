@@ -70,6 +70,65 @@ function removeCollected(id) {
   return newCollected;
 }
 
+// ==================== 哄睡记录相关 ====================
+const SLEEP_RECORD_KEY = 'baby-sleep-records';
+const ONGOING_RECORD_KEY = 'baby-ongoing-sleep-record';
+
+// 获取所有哄睡记录
+function getSleepRecords() {
+  return wx.getStorageSync(SLEEP_RECORD_KEY) || [];
+}
+
+// 添加一条哄睡记录
+function addSleepRecord(record) {
+  const records = getSleepRecords();
+  const newRecords = [record, ...records]; // 最新的放在前面
+  wx.setStorageSync(SLEEP_RECORD_KEY, newRecords);
+  return newRecords;
+}
+
+// 获取正在进行中的记录
+function getOngoingSleepRecord() {
+  return wx.getStorageSync(ONGOING_RECORD_KEY) || null;
+}
+
+// 保存正在进行中的记录
+function setOngoingSleepRecord(record) {
+  wx.setStorageSync(ONGOING_RECORD_KEY, record);
+}
+
+// 清除正在进行中的记录
+function clearOngoingSleepRecord() {
+  wx.removeStorageSync(ONGOING_RECORD_KEY);
+}
+
+// 结束并保存记录
+function finishSleepRecord(endData) {
+  const ongoing = getOngoingSleepRecord();
+  if (!ongoing) return null;
+
+  const endTime = endData.endTime || Date.now();
+  const durationMs = endTime - ongoing.startTime;
+  const durationMinutes = Math.round(durationMs / 60000);
+
+  // 格式化入睡时间 (HH:mm)
+  const endDate = new Date(endTime);
+  const sleepTime = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+
+  const finishedRecord = {
+    ...ongoing,
+    endTime: endTime,
+    durationMinutes: durationMinutes,
+    sleepTime: sleepTime,
+    completed: true
+  };
+
+  addSleepRecord(finishedRecord);
+  clearOngoingSleepRecord();
+
+  return finishedRecord;
+}
+
 module.exports = {
   initStorage,
   getFavorites,
@@ -78,5 +137,12 @@ module.exports = {
   isCollected,
   injectCollectionStatus,
   addCollected,
-  removeCollected
+  removeCollected,
+  // 哄睡记录相关
+  getSleepRecords,
+  addSleepRecord,
+  getOngoingSleepRecord,
+  setOngoingSleepRecord,
+  clearOngoingSleepRecord,
+  finishSleepRecord
 };

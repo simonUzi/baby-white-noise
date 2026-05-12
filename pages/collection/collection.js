@@ -22,6 +22,13 @@ Page({
     this.loadCollectedSounds();
   },
 
+  // 跳转到哄睡记录页面
+  goToSleepRecord() {
+    wx.navigateTo({
+      url: '/pages/sleep-record/sleep-record'
+    });
+  },
+
   loadCollectedSounds() {
     const collectedIds = storage.getCollectedIds() || [];
 

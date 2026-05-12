@@ -1,0 +1,104 @@
+.container {
+  padding: 20rpx;
+  padding-bottom: 100rpx;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  padding: 30rpx 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  margin-bottom: 16rpx;
+  color: #666;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  text-align: center;
+  max-width: 400rpx;
+}
+
+.date-header {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #666;
+  margin: 30rpx 30rpx 16rpx;
+}
+
+.record-card {
+  background: white;
+  margin: 0 30rpx 16rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.record-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.record-time .arrow {
+  color: #4A6FA5;
+  font-weight: 600;
+}
+
+.record-detail {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.day-summary {
+  background: #e6f7ff;
+  margin: 0 30rpx 20rpx;
+  padding: 20rpx 30rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #1890ff;
+  text-align: center;
+}
+
+.stats-entry {
+  background: white;
+  margin: 40rpx 30rpx 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  font-size: 28rpx;
+  color: #4A6FA5;
+  font-weight: 500;
+}
+
+.stats-entry .arrow {
+  font-size: 24rpx;
+  color: #999;
+}

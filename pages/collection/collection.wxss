@@ -4,6 +4,34 @@
   min-height: 100vh;
 }
 
+/* 哄睡记录入口 */
+.sleep-record-entry {
+  background: white;
+  margin: 0 10rpx 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.entry-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.entry-text {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.entry-arrow {
+  font-size: 28rpx;
+  color: #999;
+}
+
 .sound-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -1,0 +1,50 @@
+<view class="container">
+  <view class="page-title">📊 本月哄睡统计</view>
+
+  <view class="stats-section">
+    <view class="stats-title">🛌 入睡情况</view>
+    <view class="stat-item">
+      <text class="stat-label">平均入睡时间</text>
+      <text class="stat-value">{{avgSleepTime}}</text>
+    </view>
+    <view class="stat-item highlight">
+      <text class="stat-label">最早入睡记录</text>
+      <text class="stat-value">{{earliestSleep}} 🎉</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-label">最近一周趋势</text>
+      <text class="stat-value trend">{{sleepTrend}}</text>
+    </view>
+  </view>
+
+  <view class="stats-section">
+    <view class="stats-title">⏱️ 哄睡情况</view>
+    <view class="stat-item">
+      <text class="stat-label">平均哄睡时长</text>
+      <text class="stat-value">{{avgDuration}}分钟</text>
+    </view>
+    <view class="stat-item highlight">
+      <text class="stat-label">最快哄睡记录</text>
+      <text class="stat-value">{{fastestDuration}}分钟 🚀</text>
+    </view>
+  </view>
+
+  <view class="stats-section">
+    <view class="stats-title">🏆 哄睡最快声音排名</view>
+    <block wx:for="{{soundRanking}}" wx:key="name">
+      <view class="rank-item">
+        <text class="rank-num">{{index + 1}}.</text>
+        <text class="rank-name">{{item.name}}</text>
+        <text class="rank-duration">平均{{item.avgDuration}}分钟</text>
+      </view>
+    </block>
+    <view wx:if="{{soundRanking.length === 0}}" class="empty-ranking">
+      多尝试几种声音，就能看到排名啦~
+    </view>
+  </view>
+
+  <view class="tip-box">
+    <text class="tip-title">💡 哄睡小贴士</text>
+    <text class="tip-content">{{tipContent}}</text>
+  </view>
+</view>
