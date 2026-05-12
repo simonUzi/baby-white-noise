@@ -68,15 +68,28 @@ Page({
     // 每次显示页面更新收藏状态
     this.loadSounds();
 
+    // 同步全局播放状态
+    const status = audioManager.getStatus();
+    this.setData({
+      currentSound: status.currentSound,
+      isPlaying: status.isPlaying
+    });
+
     // 检查是否有进行中的记录
     const ongoing = storage.getOngoingSleepRecord();
     if (ongoing) {
       // 恢复记录状态
       const elapsed = Date.now() - ongoing.startTime;
+      const hours = Math.floor(elapsed / 3600000);
+      const minutes = Math.floor((elapsed % 3600000) / 60000);
+      const seconds = Math.floor((elapsed % 60000) / 1000);
+      const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
       this.setData({
         isRecording: true,
         recordingStartTime: ongoing.startTime,
-        currentRecordingSound: ongoing.soundName
+        currentRecordingSound: ongoing.soundName,
+        recordingTime: timeStr
       });
       this.startRecordingTimer();
     }
@@ -102,20 +115,36 @@ Page({
       isPlaying: status.isPlaying
     });
 
-    // 如果没有在记录，提示是否开始哄睡记录
-    if (!this.data.isRecording) {
-      wx.showModal({
-        title: '开始哄睡',
-        content: '要同时开始记录哄睡时间吗？',
-        confirmText: '开始记录',
-        cancelText: '稍后再说',
-        success: (res) => {
-          if (res.confirm) {
-            this.startSleepRecord(sound);
-          }
-        }
+    // 如果正在记录且播放的是不同的声音，自动结束旧记录
+    if (this.data.isRecording && this.data.currentRecordingSound !== sound.name) {
+      this.endSleepRecord();
+      wx.showToast({
+        title: '已结束上一条哄睡记录',
+        icon: 'none',
+        duration: 1500
       });
+      // 稍微延迟后再提示新的
+      setTimeout(() => {
+        this.askToStartRecord(sound);
+      }, 1600);
+    } else if (!this.data.isRecording) {
+      this.askToStartRecord(sound);
     }
+  },
+
+  // 询问是否开始记录
+  askToStartRecord(sound) {
+    wx.showModal({
+      title: '开始哄睡',
+      content: '要同时开始记录哄睡时间吗？',
+      confirmText: '开始记录',
+      cancelText: '稍后再说',
+      success: (res) => {
+        if (res.confirm) {
+          this.startSleepRecord(sound);
+        }
+      }
+    });
   },
 
   // 开始哄睡记录

@@ -93,20 +93,36 @@ Page({
       isPlaying: status.isPlaying
     });
 
-    // 如果没有在记录，提示是否开始哄睡记录
-    if (!this.data.isRecording) {
-      wx.showModal({
-        title: '开始哄睡',
-        content: '要同时开始记录哄睡时间吗？',
-        confirmText: '开始记录',
-        cancelText: '稍后再说',
-        success: (res) => {
-          if (res.confirm) {
-            this.startSleepRecord(sound);
-          }
-        }
+    // 如果正在记录且播放的是不同的声音，自动结束旧记录
+    if (this.data.isRecording && this.data.currentRecordingSound !== sound.name) {
+      this.endSleepRecord();
+      wx.showToast({
+        title: '已结束上一条哄睡记录',
+        icon: 'none',
+        duration: 1500
       });
+      // 稍微延迟后再提示新的
+      setTimeout(() => {
+        this.askToStartRecord(sound);
+      }, 1600);
+    } else if (!this.data.isRecording) {
+      this.askToStartRecord(sound);
     }
+  },
+
+  // 询问是否开始记录
+  askToStartRecord(sound) {
+    wx.showModal({
+      title: '开始哄睡',
+      content: '要同时开始记录哄睡时间吗？',
+      confirmText: '开始记录',
+      cancelText: '稍后再说',
+      success: (res) => {
+        if (res.confirm) {
+          this.startSleepRecord(sound);
+        }
+      }
+    });
   },
 
   // 开始哄睡记录

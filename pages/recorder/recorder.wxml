@@ -1,5 +1,11 @@
 <!-- 可滚动录音列表 -->
 <view class="container">
+  <!-- 哄睡记录中横幅 -->
+  <view wx:if="{{isSleepRecording}}" class="recording-banner">
+    <text class="recording-icon">🛌</text>
+    <text class="recording-text">哄睡中... {{sleepRecordingTime}}</text>
+  </view>
+
   <!-- 录音列表 - 和首页声音列表相同的网格布局 -->
   <view class="sound-grid" wx:if="{{recordings.length > 0}}">
     <sound-card
