@@ -340,12 +340,8 @@ Page({
         // 时间到，停止播放（如果有声音在播放）
         this.clearTimer();
         if (this.data.currentSound) {
-          const status = audioManager.stop();
-          this.setData({
-            currentSound: status.currentSound,
-            isPlaying: status.isPlaying,
-            remainingSeconds: 0
-          });
+          // 直接调用 onStop() 确保触发结束记录逻辑
+          this.onStop();
         }
         wx.showToast({
           title: '定时结束，已停止播放',

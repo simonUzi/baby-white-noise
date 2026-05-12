@@ -87,11 +87,8 @@ Page({
     // 开始录音前，停止当前正在播放的音频
     if (this.data.currentSound) {
       this.clearTimer()
-      audioManager.stop()
-      this.setData({
-        currentSound: null,
-        isPlaying: false
-      })
+      // 调用 onStop() 确保触发结束记录逻辑
+      this.onStop()
     }
 
     // 先获取当前权限状态
@@ -467,12 +464,8 @@ Page({
         // 时间到，停止播放
         this.clearTimer()
         if (this.data.currentSound) {
-          const status = audioManager.stop()
-          this.setData({
-            currentSound: status.currentSound,
-            isPlaying: status.isPlaying,
-            remainingSeconds: 0
-          })
+          // 直接调用 onStop() 确保触发结束记录逻辑
+          this.onStop();
         }
         wx.showToast({
           title: '定时结束，已停止播放',
