@@ -51,6 +51,12 @@ Page({
         recordingTime: timeStr
       });
       this.startRecordingTimer();
+    } else {
+      // ✅ 没有进行中的记录，确保状态重置（解决跨页面结束记录后切回来横幅还在的bug）
+      this.setData({
+        isRecording: false,
+        recordingTime: '00:00:00'
+      });
     }
   },
 

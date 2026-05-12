@@ -58,6 +58,12 @@ Page({
         sleepRecordingTime: timeStr
       });
       this.startSleepRecordingTimer();
+    } else {
+      // ✅ 没有进行中的记录，确保状态重置（解决跨页面结束记录后切回来横幅还在的bug）
+      this.setData({
+        isSleepRecording: false,
+        sleepRecordingTime: '00:00:00'
+      });
     }
 
     // 如果是从权限设置页面返回，检查权限是否已开启
