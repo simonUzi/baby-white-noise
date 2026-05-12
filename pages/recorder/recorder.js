@@ -548,14 +548,9 @@ Page({
       confirmColor: '#f44336',
       success: (res) => {
         if (res.confirm) {
-          // 如果正在播放，停止
+          // 如果正在播放，调用onStop确保触发结束记录逻辑
           if (this.data.currentSound && this.data.currentSound.id === id) {
-            audioManager.stop()
-            this.clearTimer()
-            this.setData({
-              currentSound: null,
-              isPlaying: false
-            })
+            this.onStop()
           }
 
           const result = recorderManager.deleteRecording(id)

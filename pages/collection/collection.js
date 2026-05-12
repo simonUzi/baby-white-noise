@@ -198,12 +198,8 @@ Page({
 
     const status = audioManager.getStatus();
     if (status.currentSound && status.currentSound.id === soundId) {
-      // 如果删除的是当前播放的声音，更新状态
-      this.setData({
-        currentSound: null,
-        isPlaying: false
-      });
-      audioManager.stop();
+      // 如果删除的是当前播放的声音，调用onStop确保触发结束记录逻辑
+      this.onStop();
     }
   },
 
