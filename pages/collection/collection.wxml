@@ -6,6 +6,12 @@
     <text class="entry-arrow">→</text>
   </view>
 
+  <!-- 哄睡记录中横幅 -->
+  <view wx:if="{{isRecording}}" class="recording-banner">
+    <text class="recording-icon">🛌</text>
+    <text class="recording-text">哄睡中... {{recordingTime}}</text>
+  </view>
+
   <!-- 空状态 -->
   <view wx:if="{{collectedSounds.length === 0}}" class="empty-state">
     <view class="empty-icon">⭐</view>

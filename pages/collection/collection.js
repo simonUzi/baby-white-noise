@@ -11,7 +11,13 @@ Page({
     showTimerPicker: false,
     timerMinutes: 30,
     timerPickerIndex: 5,
-    remainingSeconds: 0
+    remainingSeconds: 0,
+    // 哄睡记录相关
+    isRecording: false,
+    recordingStartTime: null,
+    recordingTime: '00:00:00',
+    recordingTimer: null,
+    currentRecordingSound: null
   },
 
   onLoad() {
@@ -20,6 +26,25 @@ Page({
 
   onShow() {
     this.loadCollectedSounds();
+
+    // 检查是否有进行中的记录
+    const ongoing = storage.getOngoingSleepRecord();
+    if (ongoing) {
+      // 恢复记录状态
+      const elapsed = Date.now() - ongoing.startTime;
+      const hours = Math.floor(elapsed / 3600000);
+      const minutes = Math.floor((elapsed % 3600000) / 60000);
+      const seconds = Math.floor((elapsed % 60000) / 1000);
+      const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      this.setData({
+        isRecording: true,
+        recordingStartTime: ongoing.startTime,
+        currentRecordingSound: ongoing.soundName,
+        recordingTime: timeStr
+      });
+      this.startRecordingTimer();
+    }
   },
 
   // 跳转到哄睡记录页面
@@ -67,6 +92,71 @@ Page({
       currentSound: status.currentSound,
       isPlaying: status.isPlaying
     });
+
+    // 如果没有在记录，提示是否开始哄睡记录
+    if (!this.data.isRecording) {
+      wx.showModal({
+        title: '开始哄睡',
+        content: '要同时开始记录哄睡时间吗？',
+        confirmText: '开始记录',
+        cancelText: '稍后再说',
+        success: (res) => {
+          if (res.confirm) {
+            this.startSleepRecord(sound);
+          }
+        }
+      });
+    }
+  },
+
+  // 开始哄睡记录
+  startSleepRecord(sound) {
+    const startTime = Date.now();
+    const record = {
+      id: String(startTime),
+      startTime: startTime,
+      soundName: sound.name
+    };
+
+    storage.setOngoingSleepRecord(record);
+
+    this.setData({
+      isRecording: true,
+      recordingStartTime: startTime,
+      currentRecordingSound: sound.name
+    });
+
+    this.startRecordingTimer();
+
+    wx.showToast({
+      title: '已开始记录哄睡',
+      icon: 'success',
+      duration: 1500
+    });
+  },
+
+  // 开始计时
+  startRecordingTimer() {
+    if (this.data.recordingTimer) {
+      clearInterval(this.data.recordingTimer);
+    }
+
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - this.data.recordingStartTime;
+      const hours = Math.floor(elapsed / 3600000);
+      const minutes = Math.floor((elapsed % 3600000) / 60000);
+      const seconds = Math.floor((elapsed % 60000) / 1000);
+
+      const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      this.setData({
+        recordingTime: timeStr
+      });
+    }, 1000);
+
+    this.setData({
+      recordingTimer: timer
+    });
   },
 
   onToggleFavorite(e) {
@@ -109,6 +199,42 @@ Page({
       currentSound: status.currentSound,
       isPlaying: status.isPlaying
     });
+
+    // 如果正在记录，自动结束
+    if (this.data.isRecording) {
+      this.endSleepRecord();
+    }
+  },
+
+  // 结束哄睡记录
+  endSleepRecord() {
+    // 清除计时器
+    if (this.data.recordingTimer) {
+      clearInterval(this.data.recordingTimer);
+    }
+
+    // 结束并保存记录
+    const finished = storage.finishSleepRecord({
+      endTime: Date.now()
+    });
+
+    this.setData({
+      isRecording: false,
+      recordingStartTime: null,
+      recordingTime: '00:00:00',
+      recordingTimer: null,
+      currentRecordingSound: null
+    });
+
+    // 显示总结弹窗
+    if (finished) {
+      wx.showModal({
+        title: '✅ 哄睡完成！宝宝睡着啦 🎉',
+        content: `\n🛌 入睡时间：${finished.sleepTime}\n⏱️ 哄睡时长：${finished.durationMinutes}分钟\n🎵 使用声音：${finished.soundName}\n`,
+        showCancel: false,
+        confirmText: '好的'
+      });
+    }
   },
 
   openTimerPicker() {
