@@ -345,6 +345,14 @@ Page({
     };
   },
 
+  onHide() {
+    // 页面隐藏时清除哄睡记录计时器（避免多页面同时有计时器导致状态不同步）
+    if (this.data.recordingTimer) {
+      clearInterval(this.data.recordingTimer);
+      this.setData({ recordingTimer: null });
+    }
+  },
+
   onUnload() {
     this.clearTimer();
     audioManager.stop();

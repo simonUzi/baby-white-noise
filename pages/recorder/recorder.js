@@ -570,6 +570,14 @@ Page({
     })
   },
 
+  onHide() {
+    // 页面隐藏时清除哄睡记录计时器（避免多页面同时有计时器导致状态不同步）
+    if (this.data.sleepRecordingTimer) {
+      clearInterval(this.data.sleepRecordingTimer);
+      this.setData({ sleepRecordingTimer: null });
+    }
+  },
+
   onUnload() {
     if (this.data.timerInterval) {
       clearInterval(this.data.timerInterval)
