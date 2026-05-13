@@ -3,7 +3,9 @@ const storage = require('../../utils/storage');
 Page({
   data: {
     records: [],
-    recordsByDate: []
+    recordsByDate: [],
+    // 昼夜主题
+    pageBgColor: '#050510'
   },
 
   onLoad() {
@@ -11,6 +13,11 @@ Page({
   },
 
   onShow() {
+    // 应用昼夜主题
+    const app = getApp();
+    const theme = app.getThemeColors();
+    this.setData({ pageBgColor: theme.background });
+
     this.loadRecords();
   },
 

@@ -17,7 +17,9 @@ Page({
     recordingStartTime: null,
     recordingTime: '00:00:00',
     recordingTimer: null,
-    currentRecordingSound: null
+    currentRecordingSound: null,
+    // 昼夜主题
+    pageBgColor: '#050510'
   },
 
   onLoad() {
@@ -25,6 +27,11 @@ Page({
   },
 
   onShow() {
+    // 应用昼夜主题
+    const app = getApp();
+    const theme = app.getThemeColors();
+    this.setData({ pageBgColor: theme.background });
+
     this.loadCollectedSounds();
 
     // 同步全局播放状态

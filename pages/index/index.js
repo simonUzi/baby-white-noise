@@ -20,7 +20,9 @@ Page({
     // 新功能相关
     recentSounds: [],
     showCategories: false,
-    lastUsedSound: null
+    lastUsedSound: null,
+    // 昼夜主题
+    pageBgColor: '#050510'
   },
 
   onLoad(options) {
@@ -147,6 +149,11 @@ Page({
 
 
   onShow() {
+    // 应用昼夜主题
+    const app = getApp();
+    const theme = app.getThemeColors();
+    this.setData({ pageBgColor: theme.background });
+
     // 每次显示页面更新收藏状态
     this.loadSounds();
 

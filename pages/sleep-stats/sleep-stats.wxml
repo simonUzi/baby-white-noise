@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" style="background: {{pageBgColor}};">
   <view class="page-title">📊 本月哄睡统计</view>
 
   <view class="stats-section">

@@ -1,5 +1,5 @@
 <!-- 可滚动录音列表 -->
-<view class="container">
+<view class="container" style="background: {{pageBgColor}};">
   <!-- 哄睡记录中横幅 -->
   <view wx:if="{{isSleepRecording}}" class="recording-banner">
     <text class="recording-icon">🛌</text>

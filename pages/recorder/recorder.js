@@ -22,7 +22,9 @@ Page({
     sleepRecordingStartTime: null,
     sleepRecordingTime: '00:00:00',
     sleepRecordingTimer: null,
-    currentSleepRecordingSound: null
+    currentSleepRecordingSound: null,
+    // 昼夜主题
+    pageBgColor: '#050510'
   },
 
   // 标记是否正在等待用户从权限设置页面返回
@@ -33,6 +35,11 @@ Page({
   },
 
   onShow() {
+    // 应用昼夜主题
+    const app = getApp();
+    const theme = app.getThemeColors();
+    this.setData({ pageBgColor: theme.background });
+
     this.loadRecordings()
     // 更新播放状态
     const status = audioManager.getStatus()
