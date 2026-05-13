@@ -1,3 +1,5 @@
+const audioManager = require('../../utils/audio-manager');
+
 Component({
   properties: {
     currentSound: {
@@ -14,6 +16,10 @@ Component({
     }
   },
 
+  data: {
+    volume: 80  // 默认音量80%
+  },
+
   methods: {
     onPlayTap() {
       this.triggerEvent('playtoggle');
@@ -27,11 +33,19 @@ Component({
       this.triggerEvent('stop');
     },
 
+    // 音量调节
+    onVolumeChange(e) {
+      const volume = e.detail.value;
+      this.setData({ volume });
+      // 同步到音频管理器
+      audioManager.setVolume(volume / 100);
+    },
+
     formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}:${secs < 10 ? '0' + secs : secs}`;
-    }
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+      }
   },
 
   attached() {

@@ -3,10 +3,139 @@
   padding-bottom: 200rpx;
 }
 
-.category-title {
-  font-size: 32rpx;
+/* 页面标题 */
+.page-title {
+  font-size: 36rpx;
   font-weight: 600;
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 20rpx 10rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+/* 紧急哄睡大按钮 */
+.quick-sleep-card {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  border-radius: 28rpx;
+  padding: 48rpx 32rpx;
+  margin: 0 10rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(124, 58, 237, 0.3);
+  /* 呼吸闪烁动画 */
+  animation: quick-breathe 6s ease-in-out infinite;
+}
+
+@keyframes quick-breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(0.98); }
+}
+
+.quick-sleep-icon {
+  font-size: 64rpx;
+  margin-bottom: 8rpx;
+}
+
+.quick-sleep-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: white;
+}
+
+.quick-sleep-desc {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.quick-sleep-btn {
+  margin-top: 16rpx;
+  padding: 20rpx 48rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  color: white;
+  border: none;
+}
+
+/* 最近常用 */
+.recent-section {
+  margin-bottom: 40rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 10rpx 16rpx;
+}
+
+.recent-scroll {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 10rpx;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.recent-card {
+  flex-shrink: 0;
+  width: 200rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 20rpx;
+  padding: 24rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.recent-card.playing {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+}
+
+.recent-card-icon {
+  font-size: 48rpx;
+  margin-bottom: 4rpx;
+}
+
+.recent-card-name {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.recent-card-desc {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 全部分类折叠区 */
+.category-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 24rpx;
+  margin: 0 10rpx 20rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.category-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
   margin: 32rpx 0 16rpx 10rpx;
 }
 
@@ -24,7 +153,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,8 +161,9 @@
 }
 
 .modal-content {
-  background: #ffffff;
-  border-radius: 16rpx;
+  background: #1a1a2e;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
   padding: 40rpx 30rpx;
   width: 80%;
   max-width: 500rpx;
@@ -44,7 +174,7 @@
   font-weight: 600;
   text-align: center;
   margin-bottom: 40rpx;
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .timer-picker {
@@ -53,11 +183,11 @@
 
 .picker-display {
   padding: 24rpx;
-  background: #f5f5f5;
-  border-radius: 8rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12rpx;
   font-size: 28rpx;
   text-align: center;
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .modal-buttons {
@@ -76,27 +206,26 @@
 }
 
 .modal-buttons .cancel {
-  background: #f0f0f0;
-  color: #666;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .modal-buttons .confirm {
-  background: #4A6FA5;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
   color: #ffffff;
 }
 
 /* 哄睡记录横幅 */
 .recording-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   padding: 24rpx 30rpx;
-  margin: 20rpx;
-  margin-top: 0;
+  margin: 0 10rpx 20rpx;
   border-radius: 16rpx;
   display: flex;
   align-items: center;
   gap: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(240, 147, 251, 0.3);
 }
 
 .recording-icon {

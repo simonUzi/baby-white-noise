@@ -1,73 +1,106 @@
+/* 底部播放栏 - 简化版 */
 .player-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
-  padding: 20rpx 30rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  background: rgba(15, 15, 35, 0.98);
+  border-top: 1rpx solid rgba(255, 255, 255, 0.12);
+  padding: 16rpx 30rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  z-index: 999;
   display: flex;
   flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 主区域：声音信息 + 播放按钮 */
+.player-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
 }
 
 .player-info {
-  text-align: center;
-  margin-bottom: 16rpx;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.sound-icon {
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.sound-text {
+  flex: 1;
+  min-width: 0;
 }
 
 .current-name {
-  font-size: 28rpx;
-  color: #333;
+  font-size: 26rpx;
+  color: #ffffff;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .timer {
-  font-size: 24rpx;
-  color: #4A6FA5;
+  font-size: 22rpx;
+  color: #a855f7;
+  font-weight: 600;
   margin-top: 4rpx;
 }
 
+.play-btn-large {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: white;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(124, 58, 237, 0.4);
+  transition: all 0.3s ease;
+}
+
+.play-btn-large.playing {
+  background: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+  animation: breath 3s ease-in-out infinite;
+}
+
+@keyframes breath {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.96); }
+}
+
+/* 控制按钮区域 */
 .player-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20rpx;
+  justify-content: center;
+  gap: 32rpx;
 }
 
 .control-btn {
-  flex: 1;
-  height: 80rpx;
-  line-height: 80rpx;
-  border-radius: 40rpx !important;
-  font-size: 28rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 32rpx;
+  border-radius: 32rpx !important;
+  font-size: 24rpx;
   border: none;
-  padding: 0;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8rpx;
-}
-
-.timer-btn,
-.share-btn {
-  background: #f0f5fa;
-  color: #4A6FA5;
-}
-
-.play-btn {
-  background: #4A6FA5;
-  color: #ffffff;
-  transform: scale(1.1);
-}
-
-.play-btn.playing {
-  background: #6b8cbc;
-}
-
-.stop-btn {
-  background: #f0f0f0;
-  color: #666;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
 }

@@ -1,22 +1,24 @@
 <view class="player-bar">
-  <view class="player-info">
-    <view wx:if="{{currentSound}}" class="current-name">
-      {{currentSound.name}}
+  <view class="player-main">
+    <view class="player-info">
+      <text wx:if="{{currentSound}}" class="sound-icon">{{currentSound.icon || '🎵'}}</text>
+      <view class="sound-text">
+        <view class="current-name">
+          {{currentSound ? currentSound.name : '选择一个声音开始哄睡'}}
+        </view>
+        <view wx:if="{{hasTimer}}" class="timer">
+          剩余 {{formattedTime}}
+        </view>
+      </view>
     </view>
-    <view wx:else class="current-name">
-      未播放
-    </view>
-    <view wx:if="{{hasTimer}}" class="timer">
-      剩余 {{formattedTime}}
+    <view class="play-btn-large {{isPlaying ? 'playing' : ''}}" bindtap="onPlayTap">
+      {{isPlaying ? '⏸' : '▶'}}
     </view>
   </view>
 
   <view class="player-controls">
     <button class="control-btn timer-btn" disabled="{{!currentSound}}" bindtap="onTimerTap">
       ⏱️ 定时
-    </button>
-    <button class="control-btn play-btn {{isPlaying ? 'playing' : ''}}" bindtap="onPlayTap">
-      {{isPlaying ? '⏸️' : '▶️'}}
     </button>
     <button class="control-btn stop-btn" disabled="{{!currentSound}}" bindtap="onStopTap">
       ⏹️ 停止

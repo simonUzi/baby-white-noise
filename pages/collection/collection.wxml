@@ -1,4 +1,10 @@
 <view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text>⭐</text>
+    <text>我的收藏</text>
+  </view>
+
   <!-- 哄睡记录入口 -->
   <view class="sleep-record-entry" bindtap="goToSleepRecord">
     <text class="entry-icon">📋</text>

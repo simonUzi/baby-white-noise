@@ -16,11 +16,16 @@ Page({
     recordingStartTime: null,
     recordingTime: '00:00:00',
     recordingTimer: null,
-    currentRecordingSound: null
+    currentRecordingSound: null,
+    // 新功能相关
+    recentSounds: [],
+    showCategories: false,
+    lastUsedSound: null
   },
 
   onLoad(options) {
     this.loadSounds();
+    this.loadRecentSounds();
     audioManager.init();
 
     // 如果从分享链接进入，自动播放指定声音
@@ -44,6 +49,83 @@ Page({
           });
         }
       }, 500);
+    }
+  },
+
+  // 加载最近播放的声音
+  loadRecentSounds() {
+    const recent = storage.getRecentPlays() || [];
+    // 只取前3个
+    this.setData({
+      recentSounds: recent.slice(0, 3),
+      lastUsedSound: recent[0] || null
+    });
+  },
+
+  // 紧急哄睡 - 一键播放上次的声音
+  onQuickSleep() {
+    if (this.data.lastUsedSound) {
+      this.doPlaySound(this.data.lastUsedSound);
+    } else if (this.data.recentSounds.length > 0) {
+      this.doPlaySound(this.data.recentSounds[0]);
+    } else {
+      // 没有历史记录，播放第一个声音
+      for (const cat of this.data.categories) {
+        if (cat.sounds.length > 0) {
+          this.doPlaySound(cat.sounds[0]);
+          break;
+        }
+      }
+    }
+    wx.showToast({
+      title: '已开始播放',
+      icon: 'success',
+      duration: 1000
+    });
+  },
+
+  // 播放最近使用的声音
+  onRecentPlay(e) {
+    const index = e.currentTarget.dataset.index;
+    const sound = this.data.recentSounds[index];
+    if (sound) {
+      this.doPlaySound(sound);
+    }
+  },
+
+  // 展开/收起全部分类
+  toggleCategories() {
+    this.setData({
+      showCategories: !this.data.showCategories
+    });
+  },
+
+  // 内部播放方法，记录播放历史
+  doPlaySound(sound) {
+    const status = audioManager.play(sound);
+    this.setData({
+      currentSound: status.currentSound,
+      isPlaying: status.isPlaying
+    });
+
+    // 记录到最近播放
+    storage.addRecentPlay(sound);
+    this.loadRecentSounds();
+
+    // 如果正在记录且播放的是不同的声音，自动结束旧记录
+    if (this.data.isRecording && this.data.currentRecordingSound !== sound.name) {
+      this.endSleepRecord();
+      wx.showToast({
+        title: '已结束上一条哄睡记录',
+        icon: 'none',
+        duration: 1500
+      });
+      // 稍微延迟后再提示新的
+      setTimeout(() => {
+        this.askToStartRecord(sound);
+      }, 1600);
+    } else if (!this.data.isRecording) {
+      this.askToStartRecord(sound);
     }
   },
 
@@ -115,27 +197,7 @@ Page({
 
   onPlaySound(e) {
     const sound = e.detail.sound;
-    const status = audioManager.play(sound);
-    this.setData({
-      currentSound: status.currentSound,
-      isPlaying: status.isPlaying
-    });
-
-    // 如果正在记录且播放的是不同的声音，自动结束旧记录
-    if (this.data.isRecording && this.data.currentRecordingSound !== sound.name) {
-      this.endSleepRecord();
-      wx.showToast({
-        title: '已结束上一条哄睡记录',
-        icon: 'none',
-        duration: 1500
-      });
-      // 稍微延迟后再提示新的
-      setTimeout(() => {
-        this.askToStartRecord(sound);
-      }, 1600);
-    } else if (!this.data.isRecording) {
-      this.askToStartRecord(sound);
-    }
+    this.doPlaySound(sound);
   },
 
   // 询问是否开始记录
@@ -257,16 +319,18 @@ Page({
 
   onStop() {
     this.clearTimer();
-    const status = audioManager.stop();
-    this.setData({
-      currentSound: status.currentSound,
-      isPlaying: status.isPlaying
-    });
+    // 使用渐弱停止，更柔和的体验
+    audioManager.fadeOut().then(() => {
+      this.setData({
+        currentSound: null,
+        isPlaying: false
+      });
 
-    // 如果正在记录，自动结束
-    if (this.data.isRecording) {
-      this.endSleepRecord();
-    }
+      // 如果正在记录，自动结束
+      if (this.data.isRecording) {
+        this.endSleepRecord();
+      }
+    });
   },
 
   // 结束哄睡记录
@@ -350,8 +414,9 @@ Page({
           this.onStop();
         }
         wx.showToast({
-          title: '定时结束，已停止播放',
-          icon: 'none'
+          title: '宝宝睡着啦',
+          icon: 'success',
+          duration: 2000
         });
       } else {
         this.setData({

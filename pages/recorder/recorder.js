@@ -405,16 +405,18 @@ Page({
 
   onStop() {
     this.clearTimer()
-    const status = audioManager.stop()
-    this.setData({
-      currentSound: status.currentSound,
-      isPlaying: status.isPlaying
-    })
+    // 使用渐弱停止，更柔和的体验
+    audioManager.fadeOut().then(() => {
+      this.setData({
+        currentSound: null,
+        isPlaying: false
+      })
 
-    // 如果正在记录，自动结束
-    if (this.data.isSleepRecording) {
-      this.endSleepRecord();
-    }
+      // 如果正在记录，自动结束
+      if (this.data.isSleepRecording) {
+        this.endSleepRecord();
+      }
+    });
   },
 
   openTimerPicker() {
@@ -474,8 +476,9 @@ Page({
           this.onStop();
         }
         wx.showToast({
-          title: '定时结束，已停止播放',
-          icon: 'none'
+          title: '宝宝睡着啦',
+          icon: 'success',
+          duration: 2000
         })
       } else {
         this.setData({

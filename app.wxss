@@ -1,7 +1,9 @@
+/* 哄睡安抚主题 - 深夜友好型纯黑配色 */
 page {
-  background: linear-gradient(to bottom, #f5f7fa, #e4e9f2);
+  background: #050510;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .container {

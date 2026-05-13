@@ -1,23 +1,65 @@
 <view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text>🌙</text>
+    <text>宝宝哄睡助手</text>
+  </view>
+
   <!-- 哄睡记录中横幅 -->
   <view wx:if="{{isRecording}}" class="recording-banner">
     <text class="recording-icon">🛌</text>
     <text class="recording-text">哄睡中... {{recordingTime}}</text>
   </view>
 
-  <!-- 分类展示声音列表 -->
-  <block wx:for="{{categories}}" wx:key="name">
-    <view class="category-title">{{item.name}}</view>
-    <view class="sound-grid">
-      <sound-card
-        wx:for="{{item.sounds}}" wx:for-item="sound" wx:key="id"
-        sound="{{sound}}"
-        isPlaying="{{isPlaying && currentSound && currentSound.id === sound.id}}"
-        bindplay="onPlaySound"
-        bindtogglefavorite="onToggleFavorite"
-      />
+  <!-- 紧急哄睡超大按钮 -->
+  <view class="quick-sleep-card" bindtap="onQuickSleep">
+    <text class="quick-sleep-icon">🎧</text>
+    <text class="quick-sleep-title">紧急哄睡</text>
+    <text wx:if="{{lastUsedSound}}" class="quick-sleep-desc">
+      上次使用：{{lastUsedSound.name}}
+    </text>
+    <text wx:else class="quick-sleep-desc">点击播放最有效的哄睡声音</text>
+    <button class="quick-sleep-btn">立即播放</button>
+  </view>
+
+  <!-- 最近常用 -->
+  <view wx:if="{{recentSounds.length > 0}}" class="recent-section">
+    <view class="section-title">最近常用</view>
+    <view class="recent-scroll">
+      <view
+        wx:for="{{recentSounds}}" wx:key="id"
+        class="recent-card {{isPlaying && currentSound && currentSound.id === item.id ? 'playing' : ''}}"
+        data-index="{{index}}"
+        bindtap="onRecentPlay"
+      >
+        <text class="recent-card-icon">{{item.icon}}</text>
+        <text class="recent-card-name">{{item.name}}</text>
+        <text wx:if="{{item.durationMinutes}}" class="recent-card-desc">{{item.durationMinutes}}分钟睡着</text>
+      </view>
     </view>
-  </block>
+  </view>
+
+  <!-- 展开/收起全部分类 -->
+  <view class="category-toggle" bindtap="toggleCategories">
+    <text>{{showCategories ? '收起全部声音' : '展开全部声音'}}</text>
+    <text>{{showCategories ? '▲' : '▼'}}</text>
+  </view>
+
+  <!-- 分类展示声音列表 -->
+  <view wx:if="{{showCategories}}">
+    <block wx:for="{{categories}}" wx:key="name">
+      <view class="category-title">{{item.name}}</view>
+      <view class="sound-grid">
+        <sound-card
+          wx:for="{{item.sounds}}" wx:for-item="sound" wx:key="id"
+          sound="{{sound}}"
+          isPlaying="{{isPlaying && currentSound && currentSound.id === sound.id}}"
+          bindplay="onPlaySound"
+          bindtogglefavorite="onToggleFavorite"
+        />
+      </view>
+    </block>
+  </view>
 
   <!-- 底部播放控制栏 -->
   <player-bar

@@ -1,12 +1,13 @@
 const recorderManager = wx.getRecorderManager()
 const fs = wx.getFileSystemManager()
 
-// 常量配置 - 严格控制大小
+// 常量配置 - 优化录音质量+降噪
 const MAX_DURATION = 30000      // 30秒
-const SAMPLE_RATE = 16000       // 16kHz 采样
-const NUMBER_OF_CHANNELS = 1    // 单声道
-const ENCODE_BIT_RATE = 64000   // 64kbps
+const SAMPLE_RATE = 44100       // 提高到44.1kHz采样，音质更好
+const NUMBER_OF_CHANNELS = 1    // 单声道（减少背景噪音）
+const ENCODE_BIT_RATE = 128000  // 提高到128kbps，音质更好
 const MAX_RECORDINGS = 10       // 最多保存10条
+const AUDIO_SOURCE = 'voice'    // 使用语音优化模式，自动降噪增强人声
 
 // 状态
 let isRecording = false
@@ -101,7 +102,8 @@ function startRecording() {
           sampleRate: SAMPLE_RATE,
           numberOfChannels: NUMBER_OF_CHANNELS,
           encodeBitRate: ENCODE_BIT_RATE,
-          format: 'mp3'
+          format: 'mp3',
+          audioSource: AUDIO_SOURCE  // 语音优化模式，自动降噪增强
         })
       },
       fail: (err) => {

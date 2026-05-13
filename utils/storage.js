@@ -1,4 +1,5 @@
 const COLLECTION_KEY = 'baby-whitenoise-collected';
+const RECENT_PLAYS_KEY = 'baby-recent-plays';
 
 // 初始化存储（如果没有则创建空数组）
 function initStorage() {
@@ -129,6 +130,31 @@ function finishSleepRecord(endData) {
   return finishedRecord;
 }
 
+// ==================== 最近播放相关 ====================
+
+// 获取最近播放列表
+function getRecentPlays() {
+  return wx.getStorageSync(RECENT_PLAYS_KEY) || [];
+}
+
+// 添加到最近播放
+function addRecentPlay(sound) {
+  const recent = getRecentPlays();
+  // 移除已存在的相同ID（移到最前面）
+  const filtered = recent.filter(item => item.id !== sound.id);
+  // 新的放在最前面，最多保留10个
+  const newRecent = [
+    {
+      ...sound,
+      playTime: Date.now()
+    },
+    ...filtered
+  ].slice(0, 10);
+
+  wx.setStorageSync(RECENT_PLAYS_KEY, newRecent);
+  return newRecent;
+}
+
 module.exports = {
   initStorage,
   getFavorites,
@@ -144,5 +170,8 @@ module.exports = {
   getOngoingSleepRecord,
   setOngoingSleepRecord,
   clearOngoingSleepRecord,
-  finishSleepRecord
+  finishSleepRecord,
+  // 最近播放相关
+  getRecentPlays,
+  addRecentPlay
 };

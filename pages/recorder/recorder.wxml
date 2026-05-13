@@ -6,24 +6,36 @@
     <text class="recording-text">哄睡中... {{sleepRecordingTime}}</text>
   </view>
 
-  <!-- 录音列表 - 和首页声音列表相同的网格布局 -->
-  <view class="sound-grid" wx:if="{{recordings.length > 0}}">
-    <sound-card
-      wx:for="{{recordings}}" wx:for-item="item" wx:key="id"
-      sound="{{item}}"
-      isPlaying="{{isPlaying && currentSound && currentSound.id === item.id}}"
-      bindplay="onPlaySound"
-      bindtogglefavorite="onToggleFavorite"
-      bindlongpress="showActionSheet"
-      data-id="{{item.id}}"
-    />
+  <!-- 顶部情感化标题卡片 -->
+  <view class="header-card">
+    <view class="header-icon">👩</view>
+    <view class="header-content">
+      <view class="header-title">妈妈的声音</view>
+      <view class="header-desc">宝宝最熟悉的心跳声、摇篮曲、讲故事声音，是最好的白噪音</view>
+    </view>
   </view>
 
-  <!-- 空状态 -->
+  <!-- 录音列表 -->
+  <view class="recordings-section" wx:if="{{recordings.length > 0}}">
+    <view class="section-title">我的录音 ({{recordings.length}}/{{maxRecordings}})</view>
+    <view class="sound-grid">
+      <sound-card
+        wx:for="{{recordings}}" wx:for-item="item" wx:key="id"
+        sound="{{item}}"
+        isPlaying="{{isPlaying && currentSound && currentSound.id === item.id}}"
+        bindplay="onPlaySound"
+        bindtogglefavorite="onToggleFavorite"
+        bindlongpress="showActionSheet"
+        data-id="{{item.id}}"
+      />
+    </view>
+  </view>
+
+  <!-- 空状态 - 情感化 -->
   <view class="empty-state" wx:else>
     <view class="empty-icon">🎤</view>
     <view class="empty-text">还没有录音</view>
-    <view class="empty-hint">点击下方按钮开始录制</view>
+    <view class="empty-hint">录制妈妈的心跳声、哼唱的摇篮曲<br/>宝宝听到就会安静下来</view>
   </view>
 
   <!-- 底部留出空间，不被悬浮按钮挡住 -->
@@ -32,12 +44,11 @@
 
 <!-- 悬浮固定：录音按钮（在 tabBar 上方） -->
 <view class="float-record-button">
-  <view class="record-count-hint">最多保存 {{maxRecordings}} 条，每条最长 {{maxDuration}}s</view>
   <button
     class="{{isRecording ? 'record-button recording' : 'record-button'}}"
     bindtap="{{isRecording ? 'stopRecording' : 'startRecording'}}"
   >
-    {{isRecording ? '停止录音 (' + recordingTime + 's)' : '开始录音'}}
+    {{isRecording ? '🔴 停止录音 (' + recordingTime + 's)' : '🎤 录制妈妈的声音'}}
   </button>
 </view>
 
@@ -59,12 +70,13 @@
   </view>
 </view>
 
-<!-- 录音中蒙版 -->
+<!-- 录音中蒙版 - 情感化 -->
 <view wx:if="{{isRecording}}" class="recording-overlay">
   <view class="recording-indicator">
-    <view class="pulse"></view>
+    <view class="big-pulse"></view>
     <view class="recording-timer">{{recordingTime}}s</view>
-    <view class="recording-hint">录音中，点击下方按钮随时停止</view>
-    <button class="stop-record-btn" bindtap="stopRecording">停止录音</button>
+    <view class="recording-hint">正在录制...</view>
+    <view class="recording-tip">💡 提示：离手机近一点，录制心跳声效果最好</view>
+    <button class="stop-record-btn" bindtap="stopRecording">完成录制</button>
   </view>
 </view>

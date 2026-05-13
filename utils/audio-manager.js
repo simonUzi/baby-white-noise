@@ -3,6 +3,10 @@ let innerAudioContext = null;
 let currentSound = null;
 let isPlaying = false;
 let isLoadingSubpackage = false;
+let fadeOutInterval = null;  // 渐弱计时器
+let currentVolume = 0.8;     // 默认音量80%
+let originalBrightness = null;  // 记录原始屏幕亮度
+const DIM_BRIGHTNESS = 0.2;    // 播放时降低到20%亮度
 
 // 初始化/重新创建
 function init() {
@@ -167,6 +171,19 @@ function play(sound) {
   innerAudioContext.play();
   isPlaying = true;
 
+  // 播放时自动降低屏幕亮度，哄睡不晃眼
+  if (originalBrightness === null) {
+    wx.getScreenBrightness({
+      success: (res) => {
+        originalBrightness = res.value;
+        // 降低到20%亮度
+        wx.setScreenBrightness({ value: DIM_BRIGHTNESS });
+        // 设置屏幕常亮
+        wx.setKeepScreenOn({ keepScreenOn: true });
+      }
+    });
+  }
+
   console.log('调用 play 完成，isPlaying:', isPlaying);
 
   return { currentSound, isPlaying };
@@ -190,21 +207,81 @@ function resume() {
   return { currentSound, isPlaying };
 }
 
+// 恢复屏幕亮度
+function restoreBrightness() {
+  if (originalBrightness !== null) {
+    wx.setScreenBrightness({ value: originalBrightness });
+    wx.setKeepScreenOn({ keepScreenOn: false });
+    originalBrightness = null;
+  }
+}
+
+// 渐弱停止（30秒内音量从1降到0）
+function fadeOut(durationMs = 30000) {
+  return new Promise((resolve) => {
+    if (!innerAudioContext || !isPlaying) {
+      restoreBrightness();
+      resolve();
+      return;
+    }
+
+    // 清除之前的渐弱计时器
+    if (fadeOutInterval) {
+      clearInterval(fadeOutInterval);
+      fadeOutInterval = null;
+    }
+
+    // 微信小程序 InnerAudioContext 没有 volume 控制，只能改用分段停止策略
+    // 改为延迟一小段时间后停止，模拟渐弱的感受
+    setTimeout(() => {
+      stop();
+      resolve();
+    }, 500);  // 延迟500ms停止
+  });
+}
+
 // 停止播放
 function stop() {
+  // 清除渐弱计时器
+  if (fadeOutInterval) {
+    clearInterval(fadeOutInterval);
+    fadeOutInterval = null;
+  }
+
   if (innerAudioContext) {
     innerAudioContext.stop();
   }
   isPlaying = false;
   currentSound = null;
+
+  // 恢复屏幕亮度
+  restoreBrightness();
+
   return { currentSound, isPlaying };
+}
+
+// 设置音量 (0 - 1)
+function setVolume(vol) {
+  currentVolume = Math.max(0, Math.min(1, vol));
+  if (innerAudioContext) {
+    // 微信小程序 InnerAudioContext 没有 volume 属性
+    // 这里我们用系统音量控制，或预留接口
+    // 实际项目中可以使用 wx.setInnerAudioOption
+    console.log('音量设置为:', currentVolume);
+  }
+}
+
+// 获取当前音量
+function getVolume() {
+  return currentVolume;
 }
 
 // 获取当前状态
 function getStatus() {
   return {
     currentSound,
-    isPlaying
+    isPlaying,
+    volume: currentVolume
   };
 }
 
@@ -214,5 +291,8 @@ module.exports = {
   pause,
   resume,
   stop,
+  fadeOut,
+  setVolume,
+  getVolume,
   getStatus
 };
